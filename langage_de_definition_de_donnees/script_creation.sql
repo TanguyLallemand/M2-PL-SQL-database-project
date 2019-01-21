@@ -41,3 +41,34 @@ create table EMPRUNTS
 	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references Membre (ID_membre),
 	CONSTRAINT pk_emprunt PRIMARY KEY (ID_emprunt)
 );
+
+-- QUESTION 2:
+
+CREATE SEQUENCE uniq_ID_membre
+START WITH 1
+INCREMENT BY 1
+NOCACHE -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
+NOCYCLE; -- NOCYCLE  Specify NOCYCLE to indicate that the sequence cannot generate more values after reaching its maximum or minimum value. This is the default.
+
+-- QUESTION 3:
+
+ALTER TABLE MEMBRE
+ADD CONSTRAINT
+pas_de_doublon
+UNIQUE (Nom,Prenom,Telephone);
+
+-- QUESTION 4:
+
+ALTER TABLE MEMBRE
+ADD(Mobile VARCHAR2(10)
+CONSTRAINT commence_comme_un_portable
+CHECK (SUBSTR(Mobile,1,2) = '06'));
+
+-- Drop tables
+
+DROP TABLE OUVRAGE CASCADE CONSTRAINTS;
+DROP TABLE EXEMPLAIRE CASCADE CONSTRAINTS;
+DROP TABLE MEMBRE CASCADE CONSTRAINTS;
+DROP TABLE EMPRUNTS CASCADE CONSTRAINTS;
+
+--
