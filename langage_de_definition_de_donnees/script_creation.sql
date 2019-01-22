@@ -37,10 +37,14 @@ create table EMPRUNTS
 (
 	ID_emprunt NUMBER(6) NOT NULL,
 	ID_membre NUMBER(6) NOT NULL,
-	Cree_le DATE NOT NULL,
+	Cree_le DATE DEFAULT GETDATE(), -- date du jour comme date par defaut
 	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references Membre (ID_membre),
 	CONSTRAINT pk_emprunt PRIMARY KEY (ID_emprunt)
 );
+-- Maybe useless
+-- ALTER TABLE EMPRUNTS
+--   ADD CONSTRAINT Ajout_date_du_jour_automatique
+--     DEFAULT GETDATE() FOR Cree_le;
 
 -- QUESTION 2:
 
