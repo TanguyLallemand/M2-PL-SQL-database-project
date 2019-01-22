@@ -45,10 +45,10 @@ create table EMPRUNTS
 -- QUESTION 2:
 
 CREATE SEQUENCE uniq_ID_membre
+MINVALUE 1
 START WITH 1
 INCREMENT BY 1
-NOCACHE -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
-NOCYCLE; -- NOCYCLE  Specify NOCYCLE to indicate that the sequence cannot generate more values after reaching its maximum or minimum value. This is the default.
+NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
 -- QUESTION 3:
 
@@ -63,6 +63,13 @@ ALTER TABLE MEMBRE
 ADD(Mobile VARCHAR2(10)
 CONSTRAINT commence_comme_un_portable
 CHECK (SUBSTR(Mobile,1,2) = '06'));
+
+-- QUESTION 5:
+
+-- Execute the request after office hours.
+DELETE Telephone
+FROM MEMBRE
+WHERE((EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))<8) &&(EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))>20);
 
 -- Drop tables
 
