@@ -66,7 +66,11 @@ CHECK (SUBSTR(Mobile,1,2) = '06'));
 
 -- QUESTION 5:
 
+ALTER TABLE MEMBRE SET unused (Telephone);
+
+ALTER TABLE MEMBRE DROP unused COLUMNS;
 -- Execute the request after office hours.
+
 DELETE Telephone
 FROM MEMBRE
 WHERE((EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))<8) &&(EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))>20);
