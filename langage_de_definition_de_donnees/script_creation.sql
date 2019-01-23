@@ -16,7 +16,7 @@ create table EXEMPLAIRE
 (
 	ISBN VARCHAR2(13) NOT NULL,
 	Numero_exemplaire NUMBER(2) NOT NULL,
-	Etat VARCHAR2(8) CHECK( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf'))  NOT NULL,
+	Etat VARCHAR2(8) CHECK( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')) DEFAULT 'Neuf',
 	CONSTRAINT ISBN_Ouvrage FOREIGN KEY(ISBN) REFERENCES OUVRAGE (ISBN),
 	CONSTRAINT pk_Exemplaire PRIMARY KEY (Numero_exemplaire,ISBN)
 );
@@ -31,7 +31,9 @@ create table MEMBRE
 	Date_adhesion DATE NOT NULL,
 	Duree NUMBER(2) CHECK( Duree IN(1, 3, 6, 12)) NOT NULL,
 	CONSTRAINT pk_Membre PRIMARY KEY (ID_membre),
-	CONSTRAINT Tel_unique UNIQUE (Telephone)
+	CONSTRAINT Tel_unique UNIQUE (Telephone),
+	CONSTRAINT commence_comme_un_telephone CHECK (SUBSTR(Mobile,1,2) IN ('01','02','03','04','05','06','07'))),
+	CONSTRAINT pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
 
 create table EMPRUNTS
@@ -68,34 +70,8 @@ START WITH 1
 INCREMENT BY 1
 NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
--- QUESTION 3:
-
-ALTER TABLE MEMBRE
-ADD CONSTRAINT
-pas_de_doublon
-UNIQUE (Nom,Prenom,Telephone);
-
--- QUESTION 4:
-
-ALTER TABLE MEMBRE
-ADD(Mobile VARCHAR2(10)
-CONSTRAINT commence_comme_un_portable
-CHECK (SUBSTR(Mobile,1,2) = '06'));
-
--- QUESTION 5:
-/*
-ALTER TABLE MEMBRE SET unused (Telephone);
-
-ALTER TABLE MEMBRE DROP unused COLUMNS;
--- Execute the request after office hours.
-
-DELETE Telephone
-FROM MEMBRE
-WHERE((EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))<8) &&(EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))>20);
-*/
--- QUESTION 8:
-
-ALTER TABLE EXEMPLAIRE MODIFY Etat DEFAULT 'Neuf';
+-- QUESTION 7:
+-- faire une fonction
 
 -- QUESTION 9:
 --CREATE SYNONYM ABONNES FOR MEMBRE; CASSE TOUT
