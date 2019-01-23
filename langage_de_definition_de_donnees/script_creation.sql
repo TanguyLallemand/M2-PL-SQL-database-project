@@ -16,7 +16,7 @@ create table EXEMPLAIRE
 (
 	ISBN VARCHAR2(13) NOT NULL,
 	Numero_exemplaire NUMBER(2) NOT NULL,
-	Etat VARCHAR2(8) CHECK( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')) DEFAULT 'Neuf',
+	Etat VARCHAR2(8) DEFAULT 'Neuf' CHECK( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')),
 	CONSTRAINT ISBN_Ouvrage FOREIGN KEY(ISBN) REFERENCES OUVRAGE (ISBN),
 	CONSTRAINT pk_Exemplaire PRIMARY KEY (Numero_exemplaire,ISBN)
 );
