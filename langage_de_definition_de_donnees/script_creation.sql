@@ -51,9 +51,8 @@ create table DETAILS
 	numero_livre_emprunt NUMBER(6) NOT NULL, -- TODO je sais pas comment l'appeler
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Numero_exemplaire NUMBER(2) NOT NULL,
-    Date_retour DATE DEFAULT NULL
-	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references
-	CONSTRAINT Cree_le_emprunt FOREIGN KEY(Cree_le) references EMPRUNTS(Cree_le),
+    Date_retour DATE DEFAULT NULL,
+	CONSTRAINT ID_emprunt_Emprunt FOREIGN KEY(ID_emprunt) references EMPRUNTS(ID_emprunt)
 );
 
 create table GENRE
@@ -83,6 +82,7 @@ DROP TABLE EXEMPLAIRE CASCADE CONSTRAINTS;
 DROP TABLE MEMBRE CASCADE CONSTRAINTS;
 DROP TABLE EMPRUNTS CASCADE CONSTRAINTS;
 DROP TABLE GENRE CASCADE CONSTRAINTS;
+DROP TABLE DETAILS CASCADE CONSTRAINTS;
 DROP SYNONYM ABONNES;
 */
 
