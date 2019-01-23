@@ -14,10 +14,10 @@ CREATE TABLE OUVRAGE
 create table EXEMPLAIRE
 (
 	ISBN VARCHAR2(13) NOT NULL,
-	Numero NUMBER(2) NOT NULL,
+	Numero_exemplaire NUMBER(2) NOT NULL,
 	Etat VARCHAR2(8) CHECK( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf'))  NOT NULL,
 	CONSTRAINT ISBN_Ouvrage FOREIGN KEY(ISBN) REFERENCES OUVRAGE (ISBN),
-	CONSTRAINT pk_Exemplaire PRIMARY KEY (Numero,ISBN)
+	CONSTRAINT pk_Exemplaire PRIMARY KEY (Numero_exemplaire,ISBN)
 );
 
 create table MEMBRE
@@ -37,14 +37,26 @@ create table EMPRUNTS
 (
 	ID_emprunt NUMBER(6) NOT NULL,
 	ID_membre NUMBER(6) NOT NULL,
-	Cree_le DATE DEFAULT GETDATE(), -- date du jour comme date par defaut
+	Cree_le DATE DEFAULT SYSDATE, -- date du jour comme date par defaut
 	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references Membre (ID_membre),
 	CONSTRAINT pk_emprunt PRIMARY KEY (ID_emprunt)
 );
--- Maybe useless
--- ALTER TABLE EMPRUNTS
---   ADD CONSTRAINT Ajout_date_du_jour_automatique
---     DEFAULT GETDATE() FOR Cree_le;
+
+/*create table DETAILS_EMPRUNTS
+(
+    ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
+    Numero_exemplaire NUMBER(2) NOT NULL,
+    CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references 
+    Membre(ID_membre),
+    CONSTRAINT Cree_le_emprunt FOREIGN KEY(Cree_le) references EMPRUNTS(Cree_le),
+    Date_retour DATE DEFAULT NULL
+);*/
+
+create table GENRE
+(
+	Code VARCHAR2(3) NOT NULL,
+	Libelle VARCHAR2(40) NOT NULL
+);
 
 -- QUESTION 2:
 
@@ -69,7 +81,7 @@ CONSTRAINT commence_comme_un_portable
 CHECK (SUBSTR(Mobile,1,2) = '06'));
 
 -- QUESTION 5:
-
+/*
 ALTER TABLE MEMBRE SET unused (Telephone);
 
 ALTER TABLE MEMBRE DROP unused COLUMNS;
@@ -78,12 +90,38 @@ ALTER TABLE MEMBRE DROP unused COLUMNS;
 DELETE Telephone
 FROM MEMBRE
 WHERE((EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))<8) &&(EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))>20);
+*/
+-- QUESTION 8:
+
+ALTER TABLE EXEMPLAIRE MODIFY Etat DEFAULT 'Neuf';
+
+-- QUESTION 9: 
+--CREATE SYNONYM ABONNES FOR MEMBRE; CASSE TOUT
+
+-- PARTIE 2:
+
+-- QUESTION 1:
+
+INSERT INTO GENRE VALUES ('REC', 'Récit');
+INSERT INTO GENRE VALUES ('POL', 'Policier');
+INSERT INTO GENRE VALUES ('BD', 'Bande Dessinée');
+INSERT INTO GENRE VALUES ('INF', 'Informatique');
+INSERT INTO GENRE VALUES ('THE', 'Théatre');
+INSERT INTO GENRE VALUES ('ROM', 'Roman');
 
 -- Drop tables
-
+/*
 DROP TABLE OUVRAGE CASCADE CONSTRAINTS;
 DROP TABLE EXEMPLAIRE CASCADE CONSTRAINTS;
 DROP TABLE MEMBRE CASCADE CONSTRAINTS;
 DROP TABLE EMPRUNTS CASCADE CONSTRAINTS;
+DROP TABLE GENRE CASCADE CONSTRAINTS;
+DROP SYNONYM ABONNES;
+*/
 
+/*EXECUTE SCRIPT
+
+@./langage_de_definition_de_donnees/script_creation.sql
+
+*/
 --
