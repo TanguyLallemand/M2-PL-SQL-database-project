@@ -32,7 +32,7 @@ create table MEMBRE
 	Duree NUMBER(2) CHECK( Duree IN(1, 3, 6, 12)) NOT NULL,
 	CONSTRAINT pk_Membre PRIMARY KEY (ID_membre),
 	CONSTRAINT Tel_unique UNIQUE (Telephone),
-	CONSTRAINT commence_comme_un_telephone CHECK (SUBSTR(Mobile,1,2) IN ('01','02','03','04','05','06','07'))),
+	CONSTRAINT commence_comme_un_telephone CHECK (SUBSTR(Mobile,1,2) IN ('01','02','03','04','05','06','07')),
 	CONSTRAINT pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
 
