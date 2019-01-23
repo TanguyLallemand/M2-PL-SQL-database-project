@@ -75,6 +75,38 @@ NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are
 -- QUESTION 9:
 --CREATE SYNONYM ABONNES FOR MEMBRE; CASSE TOUT
 
+-- Partie 2: Langage de Manipulation de Données
+-- QUESTION 4:
+
+SELECT * FROM OUVRAGE;
+SELECT * FROM EXEMPLAIRE;
+SELECT * FROM MEMBRE;
+SELECT * FROM EMPRUNTS;
+SELECT * FROM DETAILS;
+SELECT * FROM GENRE;
+
+-- QUESTION 5:
+--  Allows to use Flashback command following next example:
+-- SQL> DELETE FROM CITY_OFFICES WHERE OFFICE_NUMBER = 1;
+-- 1 row deleted.
+-- SQL> COMMIT;
+-- Commit complete.
+-- SQL> FLASHBACK TABLE CITY_OFFICES
+--   2    TO TIMESTAMP (SYSTIMESTAMP - INTERVAL '05' minute);
+-- FLASHBACK TABLE CITY_OFFICES
+
+ALTER TABLE MEMBRE ENABLE ROW MOVEMENT;
+
+ALTER TABLE DETAILS ENABLE ROW MOVEMENT;
+
+-- QUESTION 6:NOT DONE Mettez à jour l’état de chaque fiche de location en le faisant passer à RE (rendue) si tous les ouvrages empruntés par le membre ont été restitués à la bibliothèque.
+
+ALTER TABLE EMPRUNTS
+ADD(
+	Etat_Emprunt VARCHAR2(10) DEFAULT 'EC'
+	CHECK( Etat_Emprunt IN ('EC', 'RE'))
+);
+
 -- Drop tables
 /*
 DROP TABLE OUVRAGE CASCADE CONSTRAINTS;
