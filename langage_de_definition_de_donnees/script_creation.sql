@@ -1,3 +1,4 @@
+-- lucidchart entité-association https://www.lucidchart.com/documents/edit/1efa825f-05fa-4494-a611-318297c0b8b5/0
 -- I) Langage de Définition de Données :
 -- QUESTION 1:
 
@@ -5,8 +6,8 @@ CREATE TABLE OUVRAGE
 (
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Titre VARCHAR2(100) NOT NULL,
-    Genre VARCHAR2(20) NOT NULL,
 	Auteur VARCHAR2(40), -- can be null because data are not always known
+    Genre VARCHAR2(20) NOT NULL,
 	Editeur VARCHAR2(40), -- can be null because data are not always known
 	CONSTRAINT pk_Ouvrage PRIMARY KEY (ISBN)
 );
@@ -22,7 +23,7 @@ create table EXEMPLAIRE
 
 create table MEMBRE
 (
-	ID_membre NUMBER(6) NOT NULL,
+	ID_membre NUMBER(6) NOT NULL, -- TODO mettre un truc auto qui s'incremente?
 	Nom VARCHAR2(40) NOT NULL,
 	Prenom VARCHAR2(40) NOT NULL,
 	Adresse VARCHAR2(50) NOT NULL,
@@ -42,15 +43,16 @@ create table EMPRUNTS
 	CONSTRAINT pk_emprunt PRIMARY KEY (ID_emprunt)
 );
 
-/*create table DETAILS_EMPRUNTS
+create table DETAILS
 (
-    ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
-    Numero_exemplaire NUMBER(2) NOT NULL,
-    CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references 
-    Membre(ID_membre),
-    CONSTRAINT Cree_le_emprunt FOREIGN KEY(Cree_le) references EMPRUNTS(Cree_le),
+	ID_emprunt NUMBER(6) NOT NULL,
+	numero_livre_emprunt NUMBER(6) NOT NULL, -- TODO je sais pas comment l'appeler
+	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
+	Numero_exemplaire NUMBER(2) NOT NULL,
     Date_retour DATE DEFAULT NULL
-);*/
+	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references
+	CONSTRAINT Cree_le_emprunt FOREIGN KEY(Cree_le) references EMPRUNTS(Cree_le),
+);
 
 create table GENRE
 (
@@ -95,7 +97,7 @@ WHERE((EXTRACT(HOUR FROM CAST(sysdate AS TIMESTAMP))<8) &&(EXTRACT(HOUR FROM CAS
 
 ALTER TABLE EXEMPLAIRE MODIFY Etat DEFAULT 'Neuf';
 
--- QUESTION 9: 
+-- QUESTION 9:
 --CREATE SYNONYM ABONNES FOR MEMBRE; CASSE TOUT
 
 -- PARTIE 2:
