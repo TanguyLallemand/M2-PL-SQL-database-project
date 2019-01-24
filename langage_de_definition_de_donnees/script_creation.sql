@@ -7,17 +7,19 @@ MINVALUE 1
 START WITH 1
 INCREMENT BY 1
 NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
+
 CREATE SEQUENCE uniq_ID_emprunt
 MINVALUE 1
 START WITH 1
 INCREMENT BY 1
 NOCACHE;
+
 CREATE TABLE OUVRAGE
 (
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Titre VARCHAR2(100) NOT NULL,
 	Auteur VARCHAR2(40), -- can be null because data are not always known
-    Genre VARCHAR2(20) NOT NULL,
+  Genre VARCHAR2(20) NOT NULL,
 	Editeur VARCHAR2(40), -- can be null because data are not always known
 	CONSTRAINT pk_Ouvrage PRIMARY KEY (ISBN)
 );
@@ -33,14 +35,14 @@ create table EXEMPLAIRE
 
 create table MEMBRE
 (
-	ID_membre NUMBER(6) DEFAULT uniq_ID_membre.nextval NOT NULL,
+	ID_membre NUMBER(6) AUTO_INCREMENT,
 	Nom VARCHAR2(40) NOT NULL,
 	Prenom VARCHAR2(40) NOT NULL,
 	Adresse VARCHAR2(50) NOT NULL,
 	Telephone VARCHAR2(10) NOT NULL,
 	Date_adhesion DATE NOT NULL,
 	Duree NUMBER(2) CHECK( Duree IN(1, 3, 6, 12)) NOT NULL,
-	CONSTRAINT pk_Membre PRIMARY KEY (ID_membre),
+	CONSTRAINT pk_membre PRIMARY KEY (ID_membre)
 	CONSTRAINT Tel_unique UNIQUE (Telephone),
 	CONSTRAINT commence_comme_un_telephone CHECK (SUBSTR(Telephone,1,2) IN ('01','02','03','04','05','06','07')),
 	CONSTRAINT pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
@@ -104,20 +106,20 @@ ALTER TABLE MEMBRE ENABLE ROW MOVEMENT;
 ALTER TABLE DETAILS ENABLE ROW MOVEMENT;
 
 -- Drop tables
-/*
-DROP TABLE OUVRAGE CASCADE CONSTRAINTS;
-DROP TABLE EXEMPLAIRE CASCADE CONSTRAINTS;
-DROP TABLE MEMBRE CASCADE CONSTRAINTS;
-DROP TABLE EMPRUNTS CASCADE CONSTRAINTS;
-DROP TABLE GENRE CASCADE CONSTRAINTS;
-DROP TABLE DETAILS CASCADE CONSTRAINTS;
-DROP SYNONYM ABONNES;
-*/
 
-/*EXECUTE SCRIPT
+-- DROP TABLE OUVRAGE CASCADE CONSTRAINTS;
+-- DROP TABLE EXEMPLAIRE CASCADE CONSTRAINTS;
+-- DROP TABLE MEMBRE CASCADE CONSTRAINTS;
+-- DROP TABLE EMPRUNTS CASCADE CONSTRAINTS;
+-- DROP TABLE GENRE CASCADE CONSTRAINTS;
+-- DROP TABLE DETAILS CASCADE CONSTRAINTS;
+-- DROP SYNONYM ABONNES;
 
-@langage_de_definition_de_donnees/script_creation.sql
-@langage_de_definition_de_donnees/script_insertion_donnees.sql
 
-*/
+-- EXECUTE SCRIPT
+--
+-- @langage_de_definition_de_donnees/script_creation.sql
+-- @langage_de_definition_de_donnees/script_insertion_donnees.sql
+-- @langage_de_definition_de_donnees/script_drop.sql
+
 --
