@@ -22,10 +22,8 @@ INSERT INTO OUVRAGE VALUES ('2070400816','Le Bourgois gentilhomme','Molière','T
 INSERT INTO OUVRAGE VALUES ('2070397177','Le curé de Tours','Honoré de Balzac','ROM','Gallimard');
 INSERT INTO OUVRAGE VALUES ('2080720872','Boule de suif','G. de Maupassant','REC','Flammarion');
 INSERT INTO OUVRAGE VALUES ('2877065073','La gloire de mon père','Marcel Pagnol','ROM','Fallois');
-INSERT INTO OUVRAGE VALUES ('2020549522','L’aventure des manuscrits de
-la mer morte',,'REC','Seuil');
-INSERT INTO OUVRAGE VALUES ('2253006327','Vingt mille lieues sous les
-mers','Jules Verne','ROM','LGF');
+INSERT INTO OUVRAGE VALUES ('2020549522','L’aventure des manuscrits de la mer morte', default,'REC','Seuil');
+INSERT INTO OUVRAGE VALUES ('2253006327','Vingt mille lieues sous les mers','Jules Verne','ROM','LGF');
 INSERT INTO OUVRAGE VALUES ('2038704015','De la terre à la lune','Jules Verne','ROM','Larousse');
 
 -- ISBN Numero etat
