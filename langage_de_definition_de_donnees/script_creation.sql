@@ -7,7 +7,11 @@ MINVALUE 1
 START WITH 1
 INCREMENT BY 1
 NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
-
+CREATE SEQUENCE uniq_ID_emprunt
+MINVALUE 1
+START WITH 1
+INCREMENT BY 1
+NOCACHE;
 CREATE TABLE OUVRAGE
 (
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
@@ -44,7 +48,7 @@ create table MEMBRE
 
 create table EMPRUNTS
 (
-	ID_emprunt NUMBER(6) NOT NULL,
+	ID_emprunt NUMBER(6) DEFAULT uniq_ID_emprunt.nextval NOT NULL,
 	ID_membre NUMBER(6) NOT NULL,
 	Cree_le DATE DEFAULT SYSDATE, -- date du jour comme date par defaut
 	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references Membre (ID_membre),
