@@ -23,7 +23,7 @@ create table EXEMPLAIRE
 
 create table MEMBRE
 (
-	ID_membre NUMBER(6) NOT NULL, -- TODO mettre un truc auto qui s'incremente?
+	ID_membre NUMBER(6) DEFAULT uniq_ID_membre.nextval NOT NULL,
 	Nom VARCHAR2(40) NOT NULL,
 	Prenom VARCHAR2(40) NOT NULL,
 	Adresse VARCHAR2(50) NOT NULL,
@@ -121,6 +121,7 @@ DROP SYNONYM ABONNES;
 /*EXECUTE SCRIPT
 
 @langage_de_definition_de_donnees/script_creation.sql
+@langage_de_definition_de_donnees/script_insertion_donnees.sql
 
 */
 --
