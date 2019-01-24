@@ -52,7 +52,7 @@ create table DETAILS
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Numero_exemplaire NUMBER(2) NOT NULL,
     Date_retour DATE DEFAULT NULL,
-	CONSTRAINT ID_emprunt_Emprunt FOREIGN KEY(ID_emprunt) references EMPRUNTS(ID_emprunt)
+	CONSTRAINT ID_emprunt_Emprunt FOREIGN KEY(ID_emprunt) references EMPRUNTS(ID_emprunt) ON DELETE CASCADE
 );
 
 create table GENRE
@@ -120,7 +120,7 @@ DROP SYNONYM ABONNES;
 
 /*EXECUTE SCRIPT
 
-@./langage_de_definition_de_donnees/script_creation.sql
+@langage_de_definition_de_donnees/script_creation.sql
 
 */
 --
