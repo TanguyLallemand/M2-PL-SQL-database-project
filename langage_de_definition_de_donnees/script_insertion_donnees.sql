@@ -67,26 +67,26 @@ INSERT INTO MEMBRE VALUES (default,'Ingrand','Irène','54 rue de iris','06050204
 INSERT INTO MEMBRE VALUES (default,'Juste','Julien','5 place des Jacobins','0603069876',Sysdate-100,6);
 
 -- QUESTION 3:
-INSERT INTO EMPRUNTS VALUES (1,1,Sysdate-200, default);
-INSERT INTO EMPRUNTS VALUES (2,3,Sysdate-190, default);
-INSERT INTO EMPRUNTS VALUES (3,4,Sysdate-180, default);
-INSERT INTO EMPRUNTS VALUES (4,1,Sysdate-170, default);
-INSERT INTO EMPRUNTS VALUES (5,5,Sysdate-160, default);
-INSERT INTO EMPRUNTS VALUES (6,2,Sysdate-150, default);
-INSERT INTO EMPRUNTS VALUES (7,4,Sysdate-140, default);
-INSERT INTO EMPRUNTS VALUES (8,1,Sysdate-130, default);
-INSERT INTO EMPRUNTS VALUES (9,9,Sysdate-120, default);
-INSERT INTO EMPRUNTS VALUES (10,6,Sysdate-110, default);
-INSERT INTO EMPRUNTS VALUES (11,1,Sysdate-100, default);
-INSERT INTO EMPRUNTS VALUES (12,6,Sysdate-90, default);
-INSERT INTO EMPRUNTS VALUES (13,2,Sysdate-80, default);
-INSERT INTO EMPRUNTS VALUES (14,4,Sysdate-70, default);
-INSERT INTO EMPRUNTS VALUES (15,1,Sysdate-60, default);
-INSERT INTO EMPRUNTS VALUES (16,3,Sysdate-50, default);
-INSERT INTO EMPRUNTS VALUES (17,1,Sysdate-40, default);
-INSERT INTO EMPRUNTS VALUES (18,5,Sysdate-30, default);
-INSERT INTO EMPRUNTS VALUES (19,4,Sysdate-20, default);
-INSERT INTO EMPRUNTS VALUES (20,1,Sysdate-10, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-200, default);
+INSERT INTO EMPRUNTS VALUES (default ,3,Sysdate-190, default);
+INSERT INTO EMPRUNTS VALUES (default ,4,Sysdate-180, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-170, default);
+INSERT INTO EMPRUNTS VALUES (default ,5,Sysdate-160, default);
+INSERT INTO EMPRUNTS VALUES (default ,2,Sysdate-150, default);
+INSERT INTO EMPRUNTS VALUES (default ,4,Sysdate-140, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-130, default);
+INSERT INTO EMPRUNTS VALUES (default ,9,Sysdate-120, default);
+INSERT INTO EMPRUNTS VALUES (default ,6,Sysdate-110, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-100, default);
+INSERT INTO EMPRUNTS VALUES (default ,6,Sysdate-90, default);
+INSERT INTO EMPRUNTS VALUES (default ,2,Sysdate-80, default);
+INSERT INTO EMPRUNTS VALUES (default ,4,Sysdate-70, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-60, default);
+INSERT INTO EMPRUNTS VALUES (default ,3,Sysdate-50, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-40, default);
+INSERT INTO EMPRUNTS VALUES (default ,5,Sysdate-30, default);
+INSERT INTO EMPRUNTS VALUES (default ,4,Sysdate-20, default);
+INSERT INTO EMPRUNTS VALUES (default ,1,Sysdate-10, default);
 
 INSERT INTO DETAILS VALUES (1,1,'2038704015',1,Sysdate-195);
 INSERT INTO DETAILS VALUES (1,2,'2070367177',2,Sysdate-190);
