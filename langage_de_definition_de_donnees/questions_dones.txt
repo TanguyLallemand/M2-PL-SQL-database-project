@@ -1,0 +1,12 @@
+question 1
+question 2 a check
+question 3 DONE
+question 4 DONE
+QUESTION 5 DONE
+question 6 not done at All
+question 7 DONE
+qauestion 8 not DONE
+question 9 DONE
+question 10 DONE
+part 2
+question 1 2 3 4 5 6 done

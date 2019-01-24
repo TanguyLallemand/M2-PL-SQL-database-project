@@ -1,6 +1,12 @@
 -- lucidchart entité-association https://www.lucidchart.com/documents/edit/1efa825f-05fa-4494-a611-318297c0b8b5/0
 -- I) Langage de Définition de Données :
--- QUESTION 1:
+
+
+CREATE SEQUENCE uniq_ID_membre
+MINVALUE 1
+START WITH 1
+INCREMENT BY 1
+NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
 CREATE TABLE OUVRAGE
 (
@@ -61,13 +67,6 @@ create table GENRE
 	Libelle VARCHAR2(40) NOT NULL
 );
 
--- QUESTION 2:
-
-CREATE SEQUENCE uniq_ID_membre
-MINVALUE 1
-START WITH 1
-INCREMENT BY 1
-NOCACHE; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
 -- QUESTION 7:
 -- faire une fonction
