@@ -3,7 +3,7 @@ question 2 a check
 question 3 DONE
 question 4 DONE
 QUESTION 5 DONE
-question 6 not done at All
+question 6 DONE
 question 7 DONE
 qauestion 8 not DONE
 question 9 DONE

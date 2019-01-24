@@ -62,6 +62,7 @@ create table DETAILS
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Numero_exemplaire NUMBER(2) NOT NULL,
     Date_retour DATE DEFAULT NULL,
+	Etat_Emprunt VARCHAR2(10) DEFAULT 'EC' CHECK( Etat_Emprunt IN ('EC', 'RE'))
 	CONSTRAINT ID_emprunt_Emprunt FOREIGN KEY(ID_emprunt) references EMPRUNTS(ID_emprunt) ON DELETE CASCADE
 );
 
@@ -101,14 +102,6 @@ SELECT * FROM GENRE;
 ALTER TABLE MEMBRE ENABLE ROW MOVEMENT;
 
 ALTER TABLE DETAILS ENABLE ROW MOVEMENT;
-
--- QUESTION 6:NOT DONE Mettez à jour l’état de chaque fiche de location en le faisant passer à RE (rendue) si tous les ouvrages empruntés par le membre ont été restitués à la bibliothèque.
-
-ALTER TABLE EMPRUNTS
-ADD(
-	Etat_Emprunt VARCHAR2(10) DEFAULT 'EC'
-	CHECK( Etat_Emprunt IN ('EC', 'RE'))
-);
 
 -- Drop tables
 /*
