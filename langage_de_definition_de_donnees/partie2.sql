@@ -67,4 +67,4 @@ SELECT Titre, Auteur,
 FROM ouvrage o join (select ISBN, count(*) as compte
                     from exemplaire
                     group by ISBN) sel
-on o.ISBN = sel.ISBN
+on o.ISBN = sel.ISBN;
