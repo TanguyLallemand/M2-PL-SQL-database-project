@@ -6,7 +6,8 @@ CREATE SEQUENCE uniq_ID_membre
 MINVALUE 1
 START WITH 1
 INCREMENT BY 1
-CACHE 10; -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
+CACHE 10;
+-- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
 CREATE SEQUENCE uniq_ID_emprunt
 MINVALUE 1

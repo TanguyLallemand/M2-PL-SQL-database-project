@@ -33,7 +33,7 @@ SELECT Titre, Auteur, Genre,
         WHEN Genre='INF' THEN 'Professionnel'
         WHEN Genre='POL' THEN 'Adulte'
         WHEN Genre='REC' OR Genre ='ROM' OR Genre ='THE' THEN 'Tous'
-        ELSE 'hello'
+        ELSE 'public inconnu'
     END as type_de_public
 FROM OUVRAGE;
 
@@ -48,3 +48,23 @@ COMMENT ON TABLE Details IS 'Chaque ligne correspond à un livre emprunté';
 -- III - 8
 SELECT *
 FROM user_tab_comments;
+
+-- III - 9 -- TODO : pas compris
+
+-- III - 10
+DROP TABLE DETAILS CASCADE CONSTRAINTS;
+
+-- III - 11 -- TODO : marche en live oracle mais a tester à la fac
+FLASHBACK TABLE DETAILS TO BEFORE DROP;
+-- III - 13
+SELECT Titre, Auteur,
+    CASE
+        WHEN compte=0 THEN 'Aucun'
+        WHEN compte<2 THEN 'Peu'
+        WHEN compte<5 THEN 'Normal'
+        ELSE 'Beaucoup'
+    END as type_de_public
+FROM ouvrage o join (select ISBN, count(*) as compte
+                    from exemplaire
+                    group by ISBN) sel
+on o.ISBN = sel.ISBN
