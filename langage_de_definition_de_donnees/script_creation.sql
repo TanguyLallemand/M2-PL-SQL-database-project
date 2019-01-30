@@ -3,24 +3,22 @@
 
 
 CREATE SEQUENCE uniq_ID_membre
-MINVALUE 1
 START WITH 1
 INCREMENT BY 1
-CACHE 10;
+CACHE 100;
 -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
 CREATE SEQUENCE uniq_ID_emprunt
-MINVALUE 1
 START WITH 1
 INCREMENT BY 1
-NOCACHE;
+CACHE 100;
 
 CREATE TABLE OUVRAGE
 (
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Titre VARCHAR2(100) NOT NULL,
 	Auteur VARCHAR2(40), -- can be null because data are not always known
-  	Genre VARCHAR2(20) NOT NULL,
+  Genre VARCHAR2(20) NOT NULL,
 	Editeur VARCHAR2(40), -- can be null because data are not always known
 	CONSTRAINT pk_Ouvrage PRIMARY KEY (ISBN)
 );
@@ -64,7 +62,7 @@ create table DETAILS
 	numero_livre_emprunt NUMBER(6) NOT NULL, -- TODO je sais pas comment l'appeler
 	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Numero_exemplaire NUMBER(2) NOT NULL,
-    Date_retour DATE DEFAULT NULL,
+  Date_retour DATE DEFAULT NULL,
 	Etat_Emprunt VARCHAR2(10) DEFAULT 'EC' CHECK( Etat_Emprunt IN ('EC', 'RE')),
 	CONSTRAINT ID_emprunt_Emprunt FOREIGN KEY(ID_emprunt) references EMPRUNTS(ID_emprunt) ON DELETE CASCADE
 );
@@ -118,8 +116,8 @@ ALTER TABLE DETAILS ENABLE ROW MOVEMENT;
 
 -- EXECUTE SCRIPT
 --
--- @langage_de_definition_de_donnees/script_creation.sql
--- @langage_de_definition_de_donnees/script_insertion_donnees.sql
+-- @langage_de_definition_de_donnees/script_creation.sql;
+-- @langage_de_definition_de_donnees/script_insertion_donnees.sql;
 -- @langage_de_definition_de_donnees/script_drop.sql
 
 --
