@@ -3,13 +3,15 @@
 
 
 CREATE SEQUENCE uniq_ID_membre
-START WITH 1
+MINVALUE 0
+START WITH 0
 INCREMENT BY 1
 CACHE 100;
 -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
 CREATE SEQUENCE uniq_ID_emprunt
-START WITH 1
+MINVALUE 0
+START WITH 0
 INCREMENT BY 1
 CACHE 100;
 
@@ -118,6 +120,6 @@ ALTER TABLE DETAILS ENABLE ROW MOVEMENT;
 --
 -- @langage_de_definition_de_donnees/script_creation.sql;
 -- @langage_de_definition_de_donnees/script_insertion_donnees.sql;
--- @langage_de_definition_de_donnees/script_drop.sql
+-- @langage_de_definition_de_donnees/script_drop.sql;
 
 --
