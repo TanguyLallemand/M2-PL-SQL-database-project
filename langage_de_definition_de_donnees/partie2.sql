@@ -5,10 +5,10 @@ GROUP BY rollup (ISBN, Numero_exemplaire);
     -- TODO : reste a ajouter la partie avec le DECODE
 
 -- III - 2
-Select ISBN, Numero_exemplaire, max(date_retour)
-from details
-where ADD_MONTHS(sysdate, -3) > date_retour
-group by rollup (ISBN, Numero_exemplaire);
+SELECT ISBN, Numero_exemplaire, max(date_retour)
+FROM details
+WHERE ADD_MONTHS(sysdate, -3) > date_retour
+GROUP BY rollup (ISBN, Numero_exemplaire);
 
 -- III - 3
 SELECT unique(ISBN)
