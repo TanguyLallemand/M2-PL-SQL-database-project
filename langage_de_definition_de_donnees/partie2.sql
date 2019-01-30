@@ -1,8 +1,22 @@
 -- III - 1
-SELECT ISBN, Numero_exemplaire, count(*)
+SELECT ISBN, Numero_exemplaire, count(*),
+DECODE(ISBN,
+2203314168, 'LEFRANC-Lultimatum',
+2746021285, 'HTML – entraînez-vous pour maîtriser le code source',
+2746026090, 'Oracle 10g SQL, PL/SQL, SQL*Plus',
+2266085816, 'Pantagruel',
+2266091611, 'Voyage au centre de la terre',
+2253010219, 'Le crime de l’Orient Express',
+2070400816, 'Le Bourgois gentilhomme',
+2070397177, 'Le curé de Tours',
+2080720872, 'Boule de suif',
+2877065073, 'La gloire de mon père',
+2020549522, 'L’aventure des manuscrits de la mer morte',
+2253006327, 'Vingt mille lieues sous les mers',
+2038704015, 'De la terre à la lune') TITRE
 FROM details
 GROUP BY rollup (ISBN, Numero_exemplaire);
-    -- TODO : reste a ajouter la partie avec le DECODE
+    -- TODO : Faire fonction qui va chercher les titre en fonction des ISBN (pas en dur quoi)
 
 -- III - 2
 SELECT ISBN, Numero_exemplaire, max(date_retour)
