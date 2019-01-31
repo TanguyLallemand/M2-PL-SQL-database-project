@@ -34,36 +34,36 @@ question 20
 
     PARTIE III
 question 1 pas trop d'accord avec le DECODE on va pas mettre tous les titres en dur ça a pas de sens
-question 2
-question 3
-question 4
-question 5
-question 6
-question 7
-question 8
+question 2 DONE
+question 3 DONE
+question 4 DONE
+question 5 DONE
+question 6 DONE
+question 7 DONE
+question 8 DONE
 question 9
-question 10
-question 11
-question 13
+question 10 DONE ajouter un PURGE?
+question 11 DONE
+question 13 DONE
 
     PARTIE IV
 question 1
-question 2
+question 2 DONE
 question 3
 question 4
 question 5
 question 6
 question 7
-question 8
+question 8 DONE
 question 9
 
     PARTIE V
-question 1
-question 2
-question 3
+question 1 DONE
+question 2 DONE
+question 3 DONE
 question 4
-question 5
-question 6
+question 5 DONE
+question 6 DONE
 question 7
 question 8
 question 9
