@@ -131,7 +131,7 @@ CREATE OR REPLACE FUNCTION Ajoutemembre (V_nom IN VARCHAR2, V_prenom IN VARCHAR2
 RETURN number AS
     V_id number;
 BEGIN
-    INSERT INTO Membres (Id_membre, Nom, Prenom, Adresse, Telephone, Date_adhesion, Duree) VALUES (Uniq_id_membre.Nextval, V_nom, V_prenom, V_adresse, V_telephone, V_date_adhesion, V_duree) RETURNING Id_membre INTO V_id;
+    INSERT INTO Membre (Id_membre, Nom, Prenom, Adresse, Telephone, Date_adhesion, Duree) VALUES (Uniq_id_membre.Nextval, V_nom, V_prenom, V_adresse, V_telephone, V_date_adhesion, V_duree) RETURNING Id_membre INTO V_id;
     RETURN V_id;
 END;
 /
