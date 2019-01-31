@@ -48,7 +48,7 @@ BEGIN
             IF EC_present = FALSE THEN
                 FOR v_emprunts_membre IN c_emprunts_membre(v_membre_expi.ID_membre)
                 LOOP
-                    UPDATE EMPRUNTS SET ID_membre = NULL
+                    UPDATE EMPRUNTS SET ID_membre := NULL
                     WHERE CURRENT OF c_emprunts_membre;
                 END LOOP;
                 delete from membre where current of c_membre_expi;
@@ -85,3 +85,27 @@ WHERE ISBN IN (
 select *
 from membre
 where ADD_MONTHS(Date_adhesion, Duree) < (sysdate+30)
+-- IV - 8 -- TODO repasser en plsql
+DECLARE
+CURSOR c_membre_sans_emprunt IS
+select id_membre
+from membre
+where id_membre not in
+(select unique(ID_membre) as IDtest
+from
+    (select ID_membre, max(cree_le) as dernier_emprunt
+    from emprunts
+    group by ID_membre)
+where dernier_emprunt > ADD_MONTHS(sysdate, 12*-3));
+
+    v_membre_sans_emprunt c_membre_sans_emprunt%ROWTYPE;
+
+BEGIN
+    FOR v_membre_sans_emprunt IN c_membre_sans_emprunt LOOP
+        UPDATE EMPRUNTS SET ID_membre = NULL
+        WHERE ID_membre = v_membre_sans_emprunt.id_membre;
+        delete from membre where ID_membre = v_membre_sans_emprunt.id_membre;
+    END LOOP;
+    COMMIT;
+END;
+/
