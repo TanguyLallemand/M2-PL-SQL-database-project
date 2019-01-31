@@ -2,77 +2,77 @@
 -- I) Langage de Définition de Données :
 
 
-CREATE SEQUENCE uniq_ID_membre
+CREATE SEQUENCE Uniq_id_membre
 MINVALUE 0
 START WITH 0
 INCREMENT BY 1
 CACHE 100;
 -- NOCACHE  Specify NOCACHE to indicate that values of the sequence are not preallocated. If you omit both CACHE and NOCACHE, the database caches 20 sequence numbers by default.
 
-CREATE SEQUENCE uniq_ID_emprunt
+CREATE SEQUENCE Uniq_id_emprunt
 MINVALUE 0
 START WITH 0
 INCREMENT BY 1
 CACHE 100;
 
-CREATE TABLE OUVRAGE
+CREATE TABLE Ouvrage
 (
-	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
-	Titre VARCHAR2(100) NOT NULL,
-	Auteur VARCHAR2(40), -- can be null because data are not always known
-  Genre VARCHAR2(20) NOT NULL,
-	Editeur VARCHAR2(40), -- can be null because data are not always known
-	CONSTRAINT pk_Ouvrage PRIMARY KEY (ISBN)
+	Isbn Varchar2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
+	Titre Varchar2(100) NOT NULL,
+	Auteur Varchar2(40), -- can be null because data are not always known
+  	Genre Varchar2(20) NOT NULL,
+	Editeur Varchar2(40), -- can be null because data are not always known
+	CONSTRAINT Pk_ouvrage PRIMARY KEY (Isbn)
 );
 
-create table EXEMPLAIRE
+CREATE TABLE Exemplaire
 (
-	ISBN VARCHAR2(13) NOT NULL,
-	Numero_exemplaire NUMBER(2) NOT NULL,
-	Etat VARCHAR2(8) DEFAULT 'Neuf' CHECK( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')),
-	CONSTRAINT ISBN_Ouvrage FOREIGN KEY(ISBN) REFERENCES OUVRAGE (ISBN),
-	CONSTRAINT pk_Exemplaire PRIMARY KEY (Numero_exemplaire,ISBN)
+	Isbn Varchar2(13) NOT NULL,
+	Numero_exemplaire Number(2) NOT NULL,
+	Etat Varchar2(8) DEFAULT 'Neuf' Check( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')),
+	CONSTRAINT Isbn_ouvrage FOREIGN Key(Isbn) REFERENCES Ouvrage (Isbn),
+	CONSTRAINT Pk_exemplaire PRIMARY KEY (Numero_exemplaire,Isbn)
 );
 
-create table MEMBRE
+CREATE TABLE Membre
 (
-	ID_membre NUMBER(6) NOT NULL,
-	Nom VARCHAR2(40) NOT NULL,
-	Prenom VARCHAR2(40) NOT NULL,
-	Adresse VARCHAR2(50) NOT NULL,
-	Telephone VARCHAR2(10) NOT NULL,
+	Id_membre Number(6) NOT NULL,
+	Nom Varchar2(40) NOT NULL,
+	Prenom Varchar2(40) NOT NULL,
+	Adresse Varchar2(50) NOT NULL,
+	Telephone Varchar2(10) NOT NULL,
 	Date_adhesion DATE NOT NULL,
-	Duree NUMBER(2) CHECK( Duree IN(1, 3, 6, 12)) NOT NULL,
-	CONSTRAINT pk_membre PRIMARY KEY (ID_membre),
+	Duree Number(2) Check( Duree IN(1, 3, 6, 12)) NOT NULL,
+	CONSTRAINT Pk_membre PRIMARY KEY (Id_membre),
 	CONSTRAINT Tel_unique UNIQUE (Telephone),
-	CONSTRAINT commence_comme_un_telephone CHECK (SUBSTR(Telephone,1,2) IN ('01','02','03','04','05','06','07')),
-	CONSTRAINT pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
+	CONSTRAINT Commence_comme_un_telephone CHECK (Substr(Telephone,1,2) IN ('01','02','03','04','05','06','07')),
+	CONSTRAINT Pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
 
-create table EMPRUNTS
+CREATE TABLE Emprunts
 (
-	ID_emprunt NUMBER(6) NOT NULL,
-	ID_membre NUMBER(6),
-	Cree_le DATE DEFAULT SYSDATE, -- date du jour comme date par defaut
-	CONSTRAINT ID_membre_Membre FOREIGN KEY(ID_membre) references Membre (ID_membre),
-	CONSTRAINT pk_emprunt PRIMARY KEY (ID_emprunt)
+	Id_emprunt Number(6) NOT NULL,
+	Id_membre Number(6),
+	Cree_le DATE DEFAULT Sysdate, -- date du jour comme date par defaut
+	CONSTRAINT Id_membre_membre FOREIGN Key(Id_membre) REFERENCES Membre (Id_membre),
+	CONSTRAINT Pk_emprunt PRIMARY KEY (Id_emprunt)
 );
 
-create table DETAILS
+CREATE TABLE Details
 (
-	ID_emprunt NUMBER(6) NOT NULL,
-	numero_livre_emprunt NUMBER(6) NOT NULL, -- TODO je sais pas comment l'appeler
-	ISBN VARCHAR2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
-	Numero_exemplaire NUMBER(10) NOT NULL,
+	Id_emprunt Number(6) NOT NULL,
+	Numero_livre_emprunt Number(6) NOT NULL, -- TODO je sais pas comment l'appeler
+	Isbn Varchar2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
+	Numero_exemplaire Number(10) NOT NULL,
     Date_retour DATE DEFAULT NULL,
-	Etat_Emprunt VARCHAR2(2) DEFAULT 'EC' CHECK( Etat_Emprunt IN ('EC', 'RE')),
-	CONSTRAINT ID_emprunt_Emprunt FOREIGN KEY(ID_emprunt) references EMPRUNTS(ID_emprunt) ON DELETE CASCADE
+	Etat_emprunt Varchar2(2) DEFAULT 'EC' Check( Etat_emprunt IN ('EC', 'RE')),
+	CONSTRAINT Id_emprunt_emprunt FOREIGN Key(Id_emprunt) REFERENCES Emprunts(Id_emprunt) ON DELETE CASCADE
 );
 
-create table GENRE
+CREATE TABLE Genre
 (
-	Code VARCHAR2(3) NOT NULL,
-	Libelle VARCHAR2(40) NOT NULL
+	Code Varchar2(3) NOT NULL,
+	Libelle Varchar2(40) NOT NULL
 );
 
 
@@ -85,12 +85,12 @@ create table GENRE
 -- Partie 2: Langage de Manipulation de Données
 -- QUESTION 4:
 
-SELECT * FROM OUVRAGE;
-SELECT * FROM EXEMPLAIRE;
-SELECT * FROM MEMBRE;
-SELECT * FROM EMPRUNTS;
-SELECT * FROM DETAILS;
-SELECT * FROM GENRE;
+SELECT * FROM Ouvrage;
+SELECT * FROM Exemplaire;
+SELECT * FROM Membre;
+SELECT * FROM Emprunts;
+SELECT * FROM Details;
+SELECT * FROM Genre;
 
 -- QUESTION 5:
 --  Allows to use Flashback command following next example:
@@ -102,8 +102,8 @@ SELECT * FROM GENRE;
 --   2    TO TIMESTAMP (SYSTIMESTAMP - INTERVAL '05' minute);
 -- FLASHBACK TABLE CITY_OFFICES
 
-ALTER TABLE MEMBRE ENABLE ROW MOVEMENT;
-ALTER TABLE DETAILS ENABLE ROW MOVEMENT;
+ALTER TABLE Membre ENABLE ROW Movement;
+ALTER TABLE Details ENABLE ROW Movement;
 
 -- Drop tables
 
