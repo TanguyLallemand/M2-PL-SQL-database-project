@@ -17,7 +17,7 @@ INSERT INTO OUVRAGE VALUES ('2746026090','Oracle 10g SQL, PL/SQL,
 SQL*Plus','J. Gabillaud','INF','ENI');
 INSERT INTO OUVRAGE VALUES ('2266085816','Pantagruel','F. Robert','ROM','Pocket');
 INSERT INTO OUVRAGE VALUES ('2266091611','Voyage au centre de la terre','Jules VERNE','ROM','Pocket');
-INSERT INTO OUVRAGE VALUES ('2253010219','Le crime de l\'Orient Express','Agatha Christie','POL','Livre de Poche');
+INSERT INTO OUVRAGE VALUES ('2253010219','Le crime de l’Orient Express','Agatha Christie','POL','Livre de Poche');
 INSERT INTO OUVRAGE VALUES ('2070400816','Le Bourgois gentilhomme','Molière','THE','Gallimard');
 INSERT INTO OUVRAGE VALUES ('2070397177','Le curé de Tours','Honoré de Balzac','ROM','Gallimard');
 INSERT INTO OUVRAGE VALUES ('2080720872','Boule de suif','G. de Maupassant','REC','Flammarion');
