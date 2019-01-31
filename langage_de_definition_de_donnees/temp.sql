@@ -1,18 +1,20 @@
 -- PARTIE V Q1
-CREATE OR REPLACE FUNCTION FinValidite (numadhe IN NUMBER)
+CREATE OR REPLACE FUNCTION Finvalidite (Num_adhe IN NUMBER)
   RETURN DATE
   IS
-  v_datedeb MEMBRE.Date_adhesion%TYPE;
-  v_duree MEMBRE.Duree%TYPE;
-  v_finval DATE;
+  V_datedeb Membre.Date_adhesion%TYPE;
+  V_duree Membre.Duree%TYPE;
+  V_finval DATE;
   BEGIN
-    SELECT Duree INTO v_duree FROM MEMBRE
-    WHERE ID_membre = numadhe;
-    SELECT Date_adhesion INTO v_datedeb FROM MEMBRE
-    WHERE ID_membre = numadhe;
-    v_finval := ADD_MONTHS(v_datedeb, v_duree);
-    dbms_output.put_line(v_finval);
-    RETURN v_finval;
+    SELECT Duree INTO V_duree
+    FROM Membre
+    WHERE Id_membre = Numadhe;
+    SELECT Date_adhesion INTO V_datedeb
+    FROM Membre
+    WHERE Id_membre = Numadhe;
+    V_finval := Add_months(V_datedeb, V_duree);
+    Dbms_output.Put_line(V_finval);
+    RETURN V_finval;
   END;
 /
 --CODE POUR TESTER LA FONCTION
@@ -25,23 +27,30 @@ CREATE OR REPLACE FUNCTION FinValidite (numadhe IN NUMBER)
 --/
 
 -- PARTIE V Q2
-CREATE OR REPLACE FUNCTION AdhesionAjour (numadhe IN NUMBER)
+CREATE OR REPLACE FUNCTION Adhesionajour (Num_adhe IN NUMBER)
   RETURN BOOLEAN
-  IS
-  v_datefin DATE;
-  BEGIN
-    v_datefin := FinValidite(numadhe);
-    IF v_datefin > sysdate THEN
-      RETURN 1;
-    ELSE
-      RETURN 0;
-    END IF;
-  END;
-/--CODE POUR TESTER LA FONCTION
-DECLARE
-  d BOOLEAN;
-BEGIN
-  d := AdhesionAjour(3);
-  dbms_output.put_line(d);
-END;
+AS
+    BEGIN
+        IF (Finvalidite(Numadhe) >= Sysdate()) THEN
+          RETURN TRUE;
+        ELSE
+          RETURN FALSE;
+        END IF;
+    END;
 /
+--CODE POUR TESTER LA FONCTION
+-- DECLARE
+--   d BOOLEAN;
+-- BEGIN
+--   d := AdhesionAjour(3);
+--   dbms_output.put_line(d);
+-- END;
+-- /
+
+-- PARTIE V Q3
+CREATE OR REPLACE FUNCTION Retourexemplaire (Num_isbn IN VARCHAR2, Num_exemplaire NUMBER)
+AS
+    BEGIN
+        UPDATE Details SET Date_retour=Sysdate
+        WHERE Date_retour IS NULL AND Isbn=Num_isbn AND Numero_exemplaire = Num_exemplaire;
+    END;
