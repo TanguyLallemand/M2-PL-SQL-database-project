@@ -66,10 +66,28 @@ END;
 -- PARTIE V Q5
 CREATE OR REPLACE FUNCTION Mesureactivite (V_periode IN number)
 RETURN number IS
-    CURSOR C_activite(V_mois IN number) IS
+    CURSOR C_activite(V_periode IN number) IS
         SELECT Id_membre, Count(*)
         FROM Emprunts, Details
-        WHERE Details.Id_emprunt=Emprunts.Numero_exemplaire AND months_between(Sysdate, Cree_le) < V_mois
+        WHERE Details.Id_emprunt=Emprunts.Id_emprunt AND months_between(Sysdate, Cree_le) < V_periode
+        GROUP BY Id_membre
+        ORDER BY 2 DESC;
+    V_membre C_activite%Rowtype;
+BEGIN
+    OPEN C_activite(V_periode);
+    FETCH C_activite INTO V_membre;
+    CLOSE C_activite;
+    RETURN V_membre.Id_membre;
+END;
+/
+
+-- PARTIE V Q6
+CREATE OR REPLACE FUNCTION Mesureactivite (V_periode IN number)
+RETURN number IS
+    CURSOR C_activite(V_periode IN number) IS
+        SELECT Id_membre, Count(*)
+        FROM Emprunts, Details
+        WHERE Details.Id_emprunt=Emprunts.Id_emprunt AND months_between(Sysdate, Cree_le) < V_periode
         GROUP BY Id_membre
         ORDER BY 2 DESC;
     V_membre C_activite%Rowtype;
