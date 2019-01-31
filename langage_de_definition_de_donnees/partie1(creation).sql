@@ -45,7 +45,7 @@ CREATE TABLE Membre
 	Duree Number(2) Check( Duree IN(1, 3, 6, 12)) NOT NULL,
 	CONSTRAINT Pk_membre PRIMARY KEY (Id_membre),
 	CONSTRAINT Tel_unique UNIQUE (Telephone),
-	CONSTRAINT Commence_comme_un_telephone CHECK (Substr(Telephone,1,2) IN ('01','02','03','04','05','06','07')),
+	CONSTRAINT Commence_comme_un_telephone CHECK (Telephone,1,2 LIKE ('06[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
 	CONSTRAINT Pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
 
