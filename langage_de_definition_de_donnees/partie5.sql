@@ -69,7 +69,7 @@ RETURN number IS
     CURSOR C_activite(V_periode IN number) IS
         SELECT Id_membre, Count(*)
         FROM Emprunts, Details
-        WHERE Details.Id_emprunt=Emprunts.Id_emprunt AND months_between(Sysdate, Cree_le) < V_periode
+        WHERE Details.Id_emprunt=Emprunts.Id_emprunt AND Months_between(Sysdate, Cree_le) < V_periode
         GROUP BY Id_membre
         ORDER BY 2 DESC;
     V_membre C_activite%Rowtype;
@@ -82,13 +82,23 @@ END;
 /
 
 -- PARTIE V Q6
-CREATE OR REPLACE FUNCTION EmpruntMoyen (V_idmembre IN number)
+CREATE OR REPLACE FUNCTION Empruntmoyen (V_idmembre IN number)
 RETURN number IS
     V_emprunt_moyen number;
 BEGIN
-    SELECT AVG(Date_retour-Cree_le + 1) INTO V_emprunt_moyen
+    SELECT Avg(Date_retour-Cree_le + 1) INTO V_emprunt_moyen
     FROM Emprunts, Details
-    WHERE Emprunts.Id_membre=V_idmembre AND details.Id_emprunt AND details.Date_retour is not null;
+    WHERE Emprunts.Id_membre=V_idmembre AND Details.Id_emprunt=Emprunts.Id_emprunt AND Details.Date_retour IS NOT NULL;
     RETURN V_emprunt_moyen;
+END;
+/
+
+-- PARTIE V Q9
+CREATE OR REPLACE FUNCTION Ajoutemembre (V_nom IN VARCHAR2, V_prenom IN VARCHAR2, V_adresse IN Varchar2, V_telephone IN VARCHAR2, V_date_adhesion IN date, V_duree IN number)
+RETURN number AS
+    V_id number;
+BEGIN
+    INSERT INTO Membres (Id_membre, Nom, Prenom, Adresse, Telephone, Date_adhesion, Duree) VALUES (Uniq_id_membre.Nextval, V_nom, V_prenom, V_adresse, V_telephone, V_date_adhesion, V_duree) RETURNING Id_membre INTO V_id;
+    RETURN V_id;
 END;
 /
