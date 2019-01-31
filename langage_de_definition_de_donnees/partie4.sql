@@ -85,7 +85,7 @@ WHERE ISBN IN (
 select *
 from membre
 where ADD_MONTHS(Date_adhesion, Duree) < (sysdate+30)
--- IV - 8 -- TODO repasser en plsql
+-- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 DECLARE
 CURSOR c_membre_sans_emprunt IS
 select id_membre
