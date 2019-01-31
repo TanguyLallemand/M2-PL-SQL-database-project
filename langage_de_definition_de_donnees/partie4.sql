@@ -67,9 +67,10 @@ FROM (select ID_membre, sum(cou)
                         group by ID_emprunt
                         order by ID_emprunt) tttt
                     ON emprunts.ID_emprunt = tttt.ID_emprunt
+        where ADD_MONTHS(sysdate, -10) < Cree_le
         group by ID_membre
         order by sum(cou))
-WHERE rownum <= 3)
+WHERE rownum <= 3
 
 -- IV - 4 -- TODO repasser en plsql
 SELECT *
@@ -80,3 +81,7 @@ WHERE ISBN IN (
   GROUP BY ISBN
   ORDER BY count(*) DESC
   FETCH FIRST 5 ROWS ONLY);
+-- IV - 5 -- TODO repasser en plsql
+select *
+from membre
+where ADD_MONTHS(Date_adhesion, Duree) < (sysdate+30)
