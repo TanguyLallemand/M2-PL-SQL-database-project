@@ -58,8 +58,15 @@ END;
 
 -- PARTIE V Q4
 CREATE OR REPLACE PROCEDURE Purgemembres AS
+    CURSOR C_membre IS
+    SELECT Id_membre
+    FROM Membre
+    WHERE (Trunc(Sysdate(), 'YYYY') - Trunc(Add_months(Date_adhesion, Duree), 'YYYY')) >3;
 BEGIN
-
+    FOR V_id IN C_membre LOOP
+        DELETE FROM Membre WHERE Id_membre=V_id.Id_membre;
+    END LOOP;
+    COMMIT;
 END;
 /
 
@@ -90,6 +97,32 @@ BEGIN
     FROM Emprunts, Details
     WHERE Emprunts.Id_membre=V_idmembre AND Details.Id_emprunt=Emprunts.Id_emprunt AND Details.Date_retour IS NOT NULL;
     RETURN V_emprunt_moyen;
+END;
+/
+
+-- PARTIE V Q7 -- TODO a faire tt les 15 jours... don t know...
+CREATE OR REPLACE PROCEDURE Majeetatexemplaire AS
+CURSOR C_exemplaire IS SELECT * FROM Exemplaire FOR UPDATE OF Etat;
+V_etat_emprunt Exemplaire.Etat%TYPE;
+V_quantite number (3);
+BEGIN
+    FOR V_exemplaire IN C_exemplaire LOOP
+    SELECT COUNT (*) INTO V_quantite
+    FROM Details
+    WHERE Details.Isbn=V_exemplaire.Isbn AND Details.Numero_exemplaire=V_exemplaire.Numero_exemplaire;
+    IF (V_quantite<=10)
+        THEN V_etat_emprunt:='NE';
+        ELSE IF (V_quantite<=25)
+            THEN V_etat_emprunt :='BO';
+            ELSE IF (V_quantite<=40)
+                THEN V_etat_emprunt :='MO';
+                ELSE V_etat_emprunt :='MA';
+            END IF;
+        END IF;
+    END IF;
+    UPDATE Exemplaire SET Etat=V_etat_emprunt
+    WHERE CURRENT OF C_exemplaire;
+    END LOOP;
 END;
 /
 
