@@ -54,6 +54,7 @@ CREATE TABLE Emprunts
 	Id_emprunt Number(6) NOT NULL,
 	Id_membre Number(6),
 	Cree_le DATE DEFAULT Sysdate, -- date du jour comme date par defaut
+	Etat_emprunt Varchar2(2) DEFAULT 'EC' Check( Etat_emprunt IN ('EC', 'RE')),
 	CONSTRAINT Id_membre_membre FOREIGN Key(Id_membre) REFERENCES Membre (Id_membre),
 	CONSTRAINT Pk_emprunt PRIMARY KEY (Id_emprunt)
 );
@@ -65,7 +66,6 @@ CREATE TABLE Details
 	Isbn Varchar2(13) NOT NULL, -- Use last version of ISBN named GENCOD and composed by 13 char
 	Numero_exemplaire Number(10) NOT NULL,
     Date_retour DATE DEFAULT NULL,
-	Etat_emprunt Varchar2(2) DEFAULT 'EC' Check( Etat_emprunt IN ('EC', 'RE')),
 	CONSTRAINT Id_emprunt_emprunt FOREIGN Key(Id_emprunt) REFERENCES Emprunts(Id_emprunt) ON DELETE CASCADE
 );
 
