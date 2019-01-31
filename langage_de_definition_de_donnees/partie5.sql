@@ -82,19 +82,13 @@ END;
 /
 
 -- PARTIE V Q6
-CREATE OR REPLACE FUNCTION Mesureactivite (V_periode IN number)
+CREATE OR REPLACE FUNCTION EmpruntMoyen (V_idmembre IN number)
 RETURN number IS
-    CURSOR C_activite(V_periode IN number) IS
-        SELECT Id_membre, Count(*)
-        FROM Emprunts, Details
-        WHERE Details.Id_emprunt=Emprunts.Id_emprunt AND months_between(Sysdate, Cree_le) < V_periode
-        GROUP BY Id_membre
-        ORDER BY 2 DESC;
-    V_membre C_activite%Rowtype;
+    V_emprunt_moyen number;
 BEGIN
-    OPEN C_activite(V_periode);
-    FETCH C_activite INTO V_membre;
-    CLOSE C_activite;
-    RETURN V_membre.Id_membre;
+    SELECT AVG(Date_retour-Cree_le + 1) INTO V_emprunt_moyen
+    FROM Emprunts, Details
+    WHERE Emprunts.Id_membre=V_idmembre AND details.Id_emprunt AND details.Date_retour is not null;
+    RETURN V_emprunt_moyen;
 END;
 /
