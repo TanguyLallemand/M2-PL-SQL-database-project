@@ -58,3 +58,25 @@ BEGIN
     COMMIT;
 END;
 /
+-- IV - 3 -- TODO repasser en plsql
+-- selectionne les ID de 3 membres qui ont le plus emprunté ça me casse les couille je laisse en plan pour le moment
+SELECT ID_membre
+FROM (select ID_membre, sum(cou)
+        from emprunts join (select ID_emprunt, count(*) as cou
+                        from details
+                        group by ID_emprunt
+                        order by ID_emprunt) tttt
+                    ON emprunts.ID_emprunt = tttt.ID_emprunt
+        group by ID_membre
+        order by sum(cou))
+WHERE rownum <= 3)
+
+-- IV - 4 -- TODO repasser en plsql
+SELECT *
+FROM OUVRAGE
+WHERE ISBN IN (
+  SELECT ISBN
+  FROM DETAILS
+  GROUP BY ISBN
+  ORDER BY count(*) DESC
+  FETCH FIRST 5 ROWS ONLY);
