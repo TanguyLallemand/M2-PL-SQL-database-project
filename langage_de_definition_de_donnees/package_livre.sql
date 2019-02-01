@@ -6,12 +6,14 @@ CREATE PACKAGE Livre AS
     FUNCTION Adhesionajour (Num_adhe IN number)
         RETURN BOOLEAN;
     PROCEDURE Retourexemplaire (Num_isbn IN Varchar2, Num_exemplaire number);
+    PROCEDURE Purgemembres;
     FUNCTION Mesureactivite (V_periode IN number)
         RETURN number;
     FUNCTION Empruntmoyen (V_idmembre IN number)
         RETURN number;
     FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
     RETURN number;
+    PROCEDURE Majeetatexemplaire;
     FUNCTION Ajoutemembre (V_nom IN Varchar2,
                         V_prenom IN Varchar2,
                         V_adresse IN Varchar2,
@@ -23,6 +25,8 @@ CREATE PACKAGE Livre AS
 
 END Livre;
 /
+
+
 
 -- Add functions code
 CREATE OR REPLACE PACKAGE BODY Livre AS
@@ -175,6 +179,14 @@ BEGIN
     INSERT INTO Membre (Id_membre, Nom, Prenom, Adresse, Telephone, Date_adhesion, Duree) VALUES (Uniq_id_membre.Nextval, V_nom, V_prenom, V_adresse, V_telephone, V_date_adhesion, V_duree) RETURNING Id_membre INTO V_id;
     RETURN V_id;
 END;
+
+-------------------------------------------------------------------------------
+-- Dureemoyenne, accepte en paramètre un numéro d’ISBN et
+-- éventuellement un numéro d’exemplaire et qui retourne, soit la durée moyenne
+-- d’emprunt de l’ouvrage (seul le numéro ISBN est connu), soit la durée
+-- moyenne d’emprunt de l’exemplairedans le cas où l’on connaît le numéro d’ISBN et
+-- le numéro de l’exemplaire
+-------------------------------------------------------------------------------
 
 FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
 RETURN number AS
