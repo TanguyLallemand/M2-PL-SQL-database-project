@@ -191,7 +191,6 @@ BEGIN
     END IF;
     RETURN v_duree;
 END;
-/
 
 END Livre;
 /
