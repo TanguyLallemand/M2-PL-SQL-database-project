@@ -1,3 +1,5 @@
+
+-- Add functions and procedure signatures
 CREATE PACKAGE Livre AS
     FUNCTION Finvalidite (Num_adhe IN number)
         RETURN DATE;
@@ -8,6 +10,8 @@ CREATE PACKAGE Livre AS
         RETURN number;
     FUNCTION Empruntmoyen (V_idmembre IN number)
         RETURN number;
+    FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
+    RETURN number;
     FUNCTION Ajoutemembre (V_nom IN Varchar2,
                         V_prenom IN Varchar2,
                         V_adresse IN Varchar2,
@@ -20,7 +24,7 @@ CREATE PACKAGE Livre AS
 END Livre;
 /
 
-
+-- Add functions code
 CREATE OR REPLACE PACKAGE BODY Livre AS
 
 -------------------------------------------------------------------------------
@@ -68,7 +72,7 @@ END;
 -- l’exemplaire de l’ouvrage emprunté.
 -------------------------------------------------------------------------------
 
-PROCEDURE Retourexemplaire (Num_isbn IN VARCHAR2, Num_exemplaire NUMBER)
+PROCEDURE Retourexemplaire (Num_isbn IN VARCHAR2, Num_exemplaire IN NUMBER)
 AS
 BEGIN
    UPDATE Details SET Date_retour=Sysdate
@@ -172,7 +176,22 @@ BEGIN
     RETURN V_id;
 END;
 
-
+FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
+RETURN number AS
+    v_duree NUMBER;
+BEGIN
+    IF (v_Num_exemplaire IS null) THEN
+        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
+        FROM Emprunts,Details
+        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn and Date_retour is not null;
+    ELSE
+        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
+        FROM Emprunts,Details
+        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn AND Details.Numero_exemplaire=v_Num_exemplaire and Date_retour is not null;
+    END IF;
+    RETURN v_duree;
+END;
+/
 
 END Livre;
 /
