@@ -45,7 +45,7 @@ CREATE TABLE Membre
 	Duree Number(2) Check( Duree IN(1, 3, 6, 12)) NOT NULL,
 	CONSTRAINT Pk_membre PRIMARY KEY (Id_membre),
 	CONSTRAINT Tel_unique UNIQUE (Telephone),
-	CONSTRAINT Commence_comme_un_telephone CHECK (Telephone LIKE ('^((01)|(02)|(03)|(04)|(05)|(06)|(07))[0-9]{8}$')),
+	CONSTRAINT Commence_comme_un_telephone CHECK (REGEXP_LIKE(Telephone, '^((01)|(02)|(03)|(04)|(05)|(06)|(07))(\d){8}?$')),
 	CONSTRAINT Pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
 
@@ -81,16 +81,6 @@ CREATE TABLE Genre
 
 -- QUESTION 9:
 --CREATE SYNONYM ABONNES FOR MEMBRE; CASSE TOUT
-
--- Partie 2: Langage de Manipulation de Données
--- QUESTION 4:
-
-SELECT * FROM Ouvrage;
-SELECT * FROM Exemplaire;
-SELECT * FROM Membre;
-SELECT * FROM Emprunts;
-SELECT * FROM Details;
-SELECT * FROM Genre;
 
 -- QUESTION 5:
 --  Allows to use Flashback command following next example:
