@@ -13,3 +13,14 @@ BEGIN
   END IF;
 END;
 /
+
+
+-- Partie VI Q3
+CREATE OR REPLACE TRIGGER modif_mb_emprunt BEFORE UPDATE ON Emprunts
+FOR EACH ROW
+WHEN (new.Id_membre != old.Id_membre)
+
+BEGIN
+  RAISE_APPLICATION_ERROR(-20002, 'Impossible de modifier le membre d''un emprunt');
+  END;
+/

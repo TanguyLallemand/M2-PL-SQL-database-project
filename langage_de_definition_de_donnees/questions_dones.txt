@@ -73,8 +73,8 @@ question 12 DONE
 
     PARTIE VI
 question 1
-question 2
-question 3
+question 2 DONE
+question 3 DONE
 question 4
 question 5
 question 6
