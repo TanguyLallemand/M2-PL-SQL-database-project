@@ -101,19 +101,19 @@ END;
 /
 
 -- PARTIE V Q7 --
-CREATE OR REPLACE FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null) AS
-    v_duree NUMBER;
+CREATE OR REPLACE FUNCTION Dureemoyenne (V_num_isbn IN VARCHAR2, V_num_exemplaire IN NUMBER DEFAULT NULL) AS
+    V_duree NUMBER;
 BEGIN
-    IF (v_Num_exemplaire IS null) THEN
-        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
+    IF (V_num_exemplaire IS NULL) THEN
+        SELECT Avg(Trunc(Date_retour,'DD')-Trunc(Cree_le,'DD')+1) INTO V_duree
         FROM Emprunts,Details
-        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn and Date_retour is not null;
+        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Details.Isbn=V_num_isbn AND Date_retour IS NOT NULL;
     ELSE
-        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
+        SELECT Avg(Trunc(Date_retour,'DD')-Trunc(Cree_le,'DD')+1) INTO V_duree
         FROM Emprunts,Details
-        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn AND Details.Numero_exemplaire=v_Num_exemplaire and Date_retour is not null;
+        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Details.Isbn=V_num_isbn AND Details.Numero_exemplaire=V_num_exemplaire AND Date_retour IS NOT NULL;
     END IF;
-    RETURN v_duree;
+    RETURN V_duree;
 END;
 /
 
@@ -151,5 +151,32 @@ RETURN number AS
 BEGIN
     INSERT INTO Membre (Id_membre, Nom, Prenom, Adresse, Telephone, Date_adhesion, Duree) VALUES (Uniq_id_membre.Nextval, V_nom, V_prenom, V_adresse, V_telephone, V_date_adhesion, V_duree) RETURNING Id_membre INTO V_id;
     RETURN V_id;
+END;
+/
+
+-- PARTIE V Q10
+CREATE OR REPLACE PROCEDURE Supprimeexemplaire (V_num_isbn number, V_num_exemplaire number)
+AS
+V_nombre_livre_empruntes Number(3);
+BEGIN
+SELECT COUNT (*) INTO V_nombre_livre_empruntes
+FROM Details
+WHERE Details.Isbn = V_num_isbn;
+    IF (V_nombre_livre_empruntes=0) THEN
+        DELETE FROM Exemplaire WHERE Isbn=V_num_isbn AND Numero_exemplaire=V_num_exemplaire;
+        ELSE
+         Raise_application_error(-20343, 'exemplaire emprunté');
+    END IF;
+END;
+/
+
+-- PARTIE V Q11
+CREATE OR REPLACE PROCEDURE Empruntexpress (V_membre number, V_num_isbn number, V_num_exemplaire number)
+AS
+V_emprunt Emprunts.Id_emprunt%TYPE;
+BEGIN
+    INSERT INTO Emprunts (Id_emprunt, Id_membre, Cree_le, Etat_emprunt) VALUES (Uniq_id_emprunt.Nextval, V_membre, Sysdate, DEFAULT)
+    RETURNING Id_emprunt INTO V_emprunt;
+    INSERT INTO Details(Id_emprunt,	Numero_livre_emprunt, Isbn, Numero_exemplaire) VALUES(V_emprunt, 1, V_num_isbn, V_num_exemplaire);
 END;
 /
