@@ -6,6 +6,14 @@ SELECT * FROM Emprunts;
 SELECT * FROM Details;
 SELECT * FROM Genre;
 
+-- II - 6
+update emprunts
+set Etat_emprunt = 'RE'
+where Id_emprunt not in (select Id_emprunt
+from details
+where date_retour IS NULL)
+
+
 -- II - 9
 select titre from ouvrage;
 

@@ -16,7 +16,7 @@ question 2 DONE
 question 3 DONE
 question 4 DONE
 question 5 DONE peut-etre voir pour l'intégrer directement dans la déclaration de la table?
-question 6 DONE (CONSTRAINT mais pas la requete d'update de l'etat)
+question 6 DONE voir pour transformer la requete en trigger
 question 7 creer un fichier pour les questions qui suivent les insertions?
 question 8
 question 9 DONE
