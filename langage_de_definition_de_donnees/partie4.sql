@@ -89,19 +89,52 @@ BEGIN
     COMMIT;
 END;
 /
--- IV - 3 -- TODO repasser en plsql
--- selectionne les ID de 3 membres qui ont le plus emprunté ça me casse les couille je laisse en plan pour le moment
-SELECT Id_membre
-FROM (SELECT Id_membre, Sum(Cou)
-        FROM Emprunts JOIN (SELECT Id_emprunt, Count(*) AS Cou
-                        FROM Details
-                        GROUP BY Id_emprunt
-                        ORDER BY Id_emprunt) Tttt
-                    ON Emprunts.Id_emprunt = Tttt.Id_emprunt
-        WHERE Add_months(Sysdate, -10) < Cree_le
-        GROUP BY Id_membre
-        ORDER BY Sum(Cou))
-WHERE rownum <= 3
+-- IV - 3
+
+Set serveroutput on
+DECLARE
+    CURSOR c_order_croissant is
+        select emprunts.Id_membre, count(*)
+        from emprunts, Details
+        WHERE emprunts.Id_emprunt=Details.Id_emprunt and months_between(Sysdate, emprunts.Cree_le) <=10
+        GROUP by emprunts.Id_membre
+        ORDER by 2 ASC;
+
+    CURSOR c_order_decroissant is
+        select emprunts.Id_membre, count(*)
+        from emprunts, Details
+        WHERE emprunts.Id_emprunt=Details.Id_emprunt and months_between(Sysdate, emprunts.Cree_le) <=10
+        GROUP by emprunts.Id_membre
+        ORDER by 2 DESC;
+
+    v_reception c_order_croissant%Rowtype;
+    iterator number;
+    V_membre Membre%Rowtype;
+BEGIN
+    Dbms_output.Put_line('Membres empruntant le moins:');
+    OPEN c_order_croissant;
+    for iterator in 1..3 LOOP
+        FETCH c_order_croissant into v_reception;
+        select * into V_membre
+        FROM Membre
+        where Id_membre=v_reception.Id_membre;
+        Dbms_output.Put_line(iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.nom);
+    end loop;
+    CLOSE c_order_croissant;
+
+
+    Dbms_output.Put_line('Membres empruntant le plus:');
+    OPEN c_order_decroissant;
+    for iterator in 1..3 LOOP
+        FETCH c_order_decroissant into v_reception;
+        select * into V_membre
+        FROM Membre
+        where Id_membre=v_reception.Id_membre;
+        Dbms_output.Put_line(iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.nom);
+    end loop;
+    CLOSE c_order_decroissant;
+END;
+/
 
 -- IV - 4 -- TODO repasser en plsql
 SELECT *
