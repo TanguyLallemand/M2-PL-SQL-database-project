@@ -21,7 +21,8 @@ CREATE PACKAGE Livre AS
                         V_date_adhesion IN date,
                         V_duree IN number)
         RETURN number;
-
+    PROCEDURE Empruntexpress (V_membre number, V_num_isbn number, V_num_exemplaire number);
+    PROCEDURE Supprimeexemplaire (V_num_isbn number, V_num_exemplaire number);
 
 END Livre;
 /
@@ -202,6 +203,42 @@ BEGIN
         WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn AND Details.Numero_exemplaire=v_Num_exemplaire and Date_retour is not null;
     END IF;
     RETURN v_duree;
+END;
+
+
+-------------------------------------------------------------------------------
+-- Supprimeexemplaire, qui accepte en paramètre l’identification
+-- complète d’un exemplaire (ISBN et numéro d’exemplaire) et supprime
+-- celui-ci s’il n’est pas emprunté.
+-------------------------------------------------------------------------------
+PROCEDURE Supprimeexemplaire (V_num_isbn number, V_num_exemplaire number)
+AS
+V_nombre_livre_empruntes Number(3);
+BEGIN
+SELECT COUNT (*) INTO V_nombre_livre_empruntes
+FROM Details
+WHERE Details.Isbn = V_num_isbn;
+    IF (V_nombre_livre_empruntes=0) THEN
+        DELETE FROM Exemplaire WHERE Isbn=V_num_isbn AND Numero_exemplaire=V_num_exemplaire;
+        ELSE
+         Raise_application_error(-20343, 'exemplaire emprunté');
+    END IF;
+END;
+
+
+-------------------------------------------------------------------------------
+-- Empruntexpress, qui accepte en paramètre le numéro du membre et l’identification
+-- exacte de l’exemplaire emprunté (ISBN et numéro). La procédure ajoute
+-- automatiquement une ligne dans la table des emprunts et une
+-- ligne dans la table des détails.
+-------------------------------------------------------------------------------
+PROCEDURE Empruntexpress (V_membre number, V_num_isbn number, V_num_exemplaire number)
+AS
+V_emprunt Emprunts.Id_emprunt%TYPE;
+BEGIN
+    INSERT INTO Emprunts (Id_emprunt, Id_membre, Cree_le, Etat_emprunt) VALUES (Uniq_id_emprunt.Nextval, V_membre, Sysdate, DEFAULT)
+    RETURNING Id_emprunt INTO V_emprunt;
+    INSERT INTO Details(Id_emprunt,	Numero_livre_emprunt, Isbn, Numero_exemplaire) VALUES(V_emprunt, 1, V_num_isbn, V_num_exemplaire);
 END;
 
 END Livre;

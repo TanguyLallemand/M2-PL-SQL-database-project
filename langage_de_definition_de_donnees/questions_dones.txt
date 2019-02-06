@@ -67,15 +67,15 @@ question 6 DONE
 question 7 DONE
 question 8 DONE, mais ne le fais pas tt les 15 jours
 question 9 DONE
-question 10
-question 11
+question 10 DONE
+question 11 DONE
 question 12 DONE
 
     PARTIE VI
 question 1
-question 2
-question 3
-question 4
+question 2 DONE
+question 3 DONE
+question 4 DONE
 question 5
 question 6
 question 7
