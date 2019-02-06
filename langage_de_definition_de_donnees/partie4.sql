@@ -136,19 +136,33 @@ BEGIN
 END;
 /
 
--- IV - 4 -- TODO repasser en plsql
-SELECT *
-FROM Ouvrage
-WHERE Isbn IN (
-  SELECT Isbn
-  FROM Details
-  GROUP BY Isbn
-  ORDER BY Count(*) DESC
-  FETCH FIRST 5 ROWS ONLY);
--- IV - 5 -- TODO repasser en plsql
-SELECT *
+-- IV - 4 --
+DECLARE
+    CURSOR C_ouvrages IS
+    SELECT Isbn, count(*) AS numbre_emprunts
+    from Details
+    group by Isbn
+    order by 2 DESC;
+
+    v_ouvrage C_ouvrages%Rowtype;
+    iterator number;
+BEGIN
+    OPEN C_ouvrages;
+    for iterator in 1..5 LOOP
+        FETCH C_ouvrages into v_ouvrage;
+        Dbms_output.Put_line('Numero: ' ||iterator||' Isbn: '||v_ouvrage.isbn);
+    end loop;
+    CLOSE C_ouvrages;
+end;
+/
+
+-- IV - 5 -- J ai refait la requete, plus otpimisé qu un bloc pl/sql a voir...
+SELECT numero, nom
 FROM Membre
-WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30)
+WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
+
+
+
 -- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 DECLARE
 CURSOR C_membre_sans_emprunt IS

@@ -50,8 +50,8 @@ question 13 DONE
 question 1
 question 2 DONE
 question 3 DONE
-question 4
-question 5
+question 4 DONE
+question 5 DONE
 question 6
 question 7
 question 8 DONE
