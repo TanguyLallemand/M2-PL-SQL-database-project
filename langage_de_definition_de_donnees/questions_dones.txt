@@ -20,15 +20,15 @@ question 6 DONE voir pour transformer la requete en trigger
 question 7 creer un fichier pour les questions qui suivent les insertions?
 question 8
 question 9 DONE
-question 10
-question 11
+question 10 DONE
+question 11 DONE
 question 12
 question 13
 question 14
 question 15
 question 16
-question 17
-question 18
+question 17 DONE
+question 18 DONE
 question 19
 question 20
 
