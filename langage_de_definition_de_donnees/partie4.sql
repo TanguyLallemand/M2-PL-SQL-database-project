@@ -11,59 +11,33 @@ DECLARE
     CURSOR C_membre_expi
         IS SELECT *
         FROM Membre
-        WHERE Add_months(Date_adhesion, Duree) < Sysdate FOR UPDATE;
+        WHERE Add_months(Date_adhesion, Duree) < Add_months(Sysdate, (-2*12)) FOR UPDATE;
     -- variable temp pour les membres de la liste
     V_membre_expi C_membre_expi%Rowtype;
 
     -- curseur pour les emprunts des membres expirés
-    CURSOR C_emprunts_membre(V_id_membre Emprunts.Id_membre%TYPE := NULL)
-        IS SELECT Id_emprunt, Id_membre
+    CURSOR C_emprunts_en_cours(V_id_membre Emprunts.Id_membre%TYPE := NULL)
+        IS SELECT count(*) as coun
         FROM Emprunts
-        WHERE Id_membre = V_id_membre FOR UPDATE OF Id_membre;
+        WHERE Id_membre = V_id_membre and etat_emprunt = 'EC';
     -- variable temp pour les emprunts de la liste
-    V_emprunts_membre C_emprunts_membre%Rowtype;
+    V_emprunts_en_cours C_emprunts_en_cours%Rowtype;
 
-    -- curseur pour les details d'un emprunt
-    CURSOR C_detail_emprunt(V_id_emprunt Emprunts.Id_emprunt%TYPE)
-        IS SELECT Count(*) AS Coun
-        FROM Details
-        WHERE Etat_emprunt = 'EC' AND Id_emprunt = V_id_emprunt;
-
-    -- variable temp pour les details des emprunts de la liste
-    V_detail_emprunt C_detail_emprunt%Rowtype;
-
-    -- boolean to know if we delete or not
-    Ec_present Boolean;
 BEGIN
-    BEGIN
-        FOR V_membre_expi IN C_membre_expi
-        LOOP
-            Ec_present := FALSE;
-            Dbms_output.Put_line(V_membre_expi.Nom);
-            FOR V_emprunts_membre IN C_emprunts_membre(V_membre_expi.Id_membre)
-            LOOP
-                Dbms_output.Put_line(V_emprunts_membre.Id_emprunt);
-                OPEN C_detail_emprunt(V_emprunts_membre.Id_emprunt);
-                FETCH C_detail_emprunt INTO V_detail_emprunt;
-                Dbms_output.Put_line(V_detail_emprunt.Coun || 'cout');
-                IF V_detail_emprunt.Coun = 0 THEN
-                    Ec_present := TRUE;
-                END IF;
-                CLOSE C_detail_emprunt;
-            END LOOP;
-            IF Ec_present = FALSE THEN
-                FOR V_emprunts_membre IN C_emprunts_membre(V_membre_expi.Id_membre)
-                LOOP
-                    UPDATE Emprunts SET Id_membre := NULL
-                    WHERE CURRENT OF C_emprunts_membre;
-                END LOOP;
-                DELETE FROM Membre WHERE CURRENT OF C_membre_expi;
-            END IF;
-        END LOOP;
-    END;
+    FOR V_membre_expi IN C_membre_expi LOOP
+        OPEN C_emprunts_en_cours(V_membre_expi.Id_membre);
+        FETCH C_emprunts_en_cours INTO V_emprunts_en_cours;
+        IF V_emprunts_en_cours.coun = 0 THEN
+            UPDATE Emprunts SET Id_membre = NULL
+            WHERE Emprunts.ID_membre = V_membre_expi.ID_membre;
+            DELETE FROM Membre WHERE CURRENT OF C_membre_expi;
+        END IF;
+        CLOSE C_emprunts_en_cours;
+    END LOOP;
     COMMIT;
 END;
 /
+
 --------------------------------------------------------------------------------
 -- IV - 3
 -- permet d’éditer la liste des trois membres qui ont emprunté le
