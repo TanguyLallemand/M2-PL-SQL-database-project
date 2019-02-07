@@ -25,8 +25,11 @@ BEGIN
 END LOOP;
 END;
 /
-
+--------------------------------------------------------------------------------
 -- IV - 2
+-- qui permet de supprimer les membres dont l’adhésion a expiré depuis plus de 2
+-- ans.
+--------------------------------------------------------------------------------
 DECLARE
     -- curseur avec la liste des membres expirés
     CURSOR C_membre_expi
@@ -85,9 +88,13 @@ BEGIN
     COMMIT;
 END;
 /
+--------------------------------------------------------------------------------
 -- IV - 3
-
-SET Serveroutput ON
+-- permet d’éditer la liste des trois membres qui ont emprunté le
+-- plus d’ouvrages au cours des dix derniers mois et établissez également la
+-- liste des trois
+-- membres qui ont emprunté moins.
+--------------------------------------------------------------------------------
 DECLARE
     CURSOR C_order_croissant IS
         SELECT Emprunts.Id_membre, Count(*)
@@ -109,6 +116,7 @@ DECLARE
 BEGIN
     Dbms_output.Put_line('Membres empruntant le moins:');
     OPEN C_order_croissant;
+    -- On veut lire seulement les 3 premiere ligne du curseur, puisque il est trié par ordre croissant
     FOR Iterator IN 1..3 LOOP
         FETCH C_order_croissant INTO V_reception;
         IF C_order_croissant%NOTFOUND
@@ -125,6 +133,7 @@ BEGIN
     Dbms_output.Put_line('Membres empruntant le plus:');
     OPEN C_order_decroissant;
     FOR Iterator IN 1..3 LOOP
+    -- On veut lire seulement les 3 premiere ligne du curseur, puisque il est trié par ordre décroissant
         FETCH C_order_decroissant INTO V_reception;
         IF C_order_decroissant%NOTFOUND
             THEN Exit;
@@ -137,19 +146,23 @@ BEGIN
     CLOSE C_order_decroissant;
 END;
 /
-
+--------------------------------------------------------------------------------
 -- IV - 4 --
+--  permet de connaître les cinq ouvrages les plus empruntés.
+--------------------------------------------------------------------------------
 DECLARE
+-- Permet d'obtenir le nombre d'emprunts pour chaque livre
     CURSOR C_ouvrages IS
-    SELECT Isbn, Count(*) AS Numbre_emprunts
-    FROM Details
-    GROUP BY Isbn
-    ORDER BY 2 DESC;
+        SELECT Isbn, Count(*) AS Numbre_emprunts
+        FROM Details
+        GROUP BY Isbn
+        ORDER BY 2 DESC;
 
     V_ouvrage C_ouvrages%Rowtype;
     Iterator number;
 BEGIN
     OPEN C_ouvrages;
+    -- On lit les 5 premières lignes
     FOR Iterator IN 1..5 LOOP
         FETCH C_ouvrages INTO V_ouvrage;
         Dbms_output.Put_line('Numero: ' ||Iterator||' Isbn: '||V_ouvrage.Isbn);
@@ -157,14 +170,18 @@ BEGIN
     CLOSE C_ouvrages;
 END;
 /
-
+--------------------------------------------------------------------------------
 -- IV - 5 -- J ai refait la requete, plus otpimisé qu un bloc pl/sql a voir...
+-- liste des membres dont l’adhésion a expiré, ou bien qui va expirer dans les
+-- 30 prochains jours.
+--------------------------------------------------------------------------------
 SELECT Id_membre, Nom
 FROM Membre
 WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
-
+--------------------------------------------------------------------------------
 -- IV - 6 --
 
+--------------------------------------------------------------------------------
 -- alteration de la table pour supporter la nouvelle approche
 ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprunt date DEFAULT Sysdate);
 -- Mise a jour de la TABLE
@@ -181,6 +198,7 @@ UPDATE Exemplaire SET Datecalculemprunt=(
 DECLARE
     CURSOR C_exemplaire IS
         SELECT * FROM Exemplaire
+        -- Mise a jour des informations concernant le nombre d'emprunts
         FOR UPDATE OF Nombre_emprunts, Datecalculemprunt;
     V_nombre_emprunts Exemplaire.Nombre_emprunts%TYPE;
 BEGIN
@@ -190,6 +208,7 @@ BEGIN
         WHERE Details.Id_emprunt=Emprunts.Id_emprunt
             AND Isbn=V_exemplaire.Numero_exemplaire
             AND Cree_le>=V_exemplaire.Datecalculemprunt;
+        -- Mise a jour de l'etat des livres en fonctions du nombre d'emprunts
         UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
         WHERE CURRENT OF C_exemplaire;
         UPDATE Exemplaire SET Etat='Neuf'
@@ -201,21 +220,28 @@ BEGIN
         UPDATE Exemplaire SET Etat='Mauvais'
         WHERE Nombre_emprunts >=41;
     END LOOP
+    -- On repercute les changement dans la base de donne
     COMMIT;
 END;
 /
-
+--------------------------------------------------------------------------------
 -- IV - 7 --
+-- permet de mettre à jour les informations sur la table des exemplaires.
+--------------------------------------------------------------------------------
 DECLARE
     V_nombre_ouvrage number (4);
     V_total_ouvrage number (4);
 BEGIN
+    -- Calcul du nombre d'exemplaire avec l'etat moyen ou mauvais
     SELECT Count(*) INTO V_nombre_ouvrage
     FROM Exemplaire
     WHERE Etat='Mauvais' OR Etat='Moyen';
+    -- Nombre total d'exemplaire
     SELECT Count(*) INTO V_total_ouvrage
     FROM Exemplaire;
+    -- Si
     IF (V_nombre_ouvrage>V_total_ouvrage/2) THEN
+        -- PL/SQL ne premet pas de faire les alter, donc on utilise execute immediate
         EXECUTE IMMEDIATE 'alter table exemplaire drop constraint constraint_check_etat';
         EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''Neuf'', ''Bon'', ''Moyen'', ''Douteux'', ''Mauvais'')';
         UPDATE Exemplaire SET Etat='Douteux'
@@ -225,8 +251,10 @@ BEGIN
 END;
 /
 
-
--- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
+--------------------------------------------------------------------------------
+-- IV - 8 --
+-- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
+--------------------------------------------------------------------------------
 CURSOR C_membre_sans_emprunt IS
 SELECT Id_membre
 FROM Membre
@@ -249,8 +277,11 @@ BEGIN
     COMMIT;
 END;
 /
-
+--------------------------------------------------------------------------------
 -- IV - 9 -- fonctionel mais inutile
+-- permet de s’assurer que tous les numéros de téléphone mobile
+-- des membres respectent le format 06 xx xx xx xx.
+--------------------------------------------------------------------------------
 ALTER table membre modify (Telephone Varchar2(14));
 DECLARE
     cursor c_membre is
