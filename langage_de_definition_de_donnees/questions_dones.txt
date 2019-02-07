@@ -22,11 +22,11 @@ question 8
 question 9 DONE
 question 10 DONE
 question 11 DONE
-question 12
-question 13
-question 14
-question 15
-question 16
+question 12 DONE
+question 13 DONE
+question 14 DONE
+question 15 DONE
+question 16 DONE
 question 17 DONE
 question 18 DONE
 question 19
