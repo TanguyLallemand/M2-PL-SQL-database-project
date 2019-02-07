@@ -77,7 +77,7 @@ question 2 DONE
 question 3 DONE
 question 4 DONE
 question 5
-question 6
+question 6 DONE
 question 7
 question 8
 question 9
