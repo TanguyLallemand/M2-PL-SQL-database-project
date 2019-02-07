@@ -67,10 +67,10 @@ END;
 -- Partie VI Q7
 
 ALTER TABLE Emprunts
-ADD (Cree_par VARCHAR2(20));
+ADD (Cree_par VARCHAR2(20) DEFAULT user);
 
 ALTER TABLE Details
-ADD (Termine_par VARCHAR2(20));
+ADD (Termine_par VARCHAR2(20) DEFAULT user);
 
 CREATE OR REPLACE TRIGGER info_create_emprunt
   BEFORE INSERT ON Emprunts
@@ -213,6 +213,4 @@ BEGIN
     RAISE_APPLICATION_ERROR(-2012, 'Tous les exemplaires de cette emprunt ont été rendus, créer un nouvel emprunt');
   END IF;
 END;
-/
-;
 /
