@@ -1,46 +1,44 @@
+-- III - 1 Nombre d’emprunts par ouvrage et par exemplaire
 -- III - 1
-SELECT Isbn, Numero_exemplaire, Count(*),
-Decode(Isbn,
-2203314168, 'LEFRANC-Lultimatum',
-2746021285, 'HTML – entraînez-vous pour maîtriser le code source',
-2746026090, 'Oracle 10g SQL, PL/SQL, SQL*Plus',
-2266085816, 'Pantagruel',
-2266091611, 'Voyage au centre de la terre',
-2253010219, 'Le crime de l’Orient Express',
-2070400816, 'Le Bourgois gentilhomme',
-2070397177, 'Le curé de Tours',
-2080720872, 'Boule de suif',
-2877065073, 'La gloire de mon père',
-2020549522, 'L’aventure des manuscrits de la mer morte',
-2253006327, 'Vingt mille lieues sous les mers',
-2038704015, 'De la terre à la lune') Titre
+SELECT Isbn,
+Decode(Grouping(Numero_exemplaire),1,'Total',Numero_exemplaire) AS Numero_exemplaire,
+Count(*) AS Nombre
 FROM Details
 GROUP BY ROLLUP (Isbn, Numero_exemplaire);
-    -- TODO : Faire fonction qui va chercher les titre en fonction des ISBN (pas en dur quoi)
 
 -- III - 2
+-- la liste des exemplaires qui n’ont jamais été empruntés au cours des trois
+-- derniers mois. Pour effectuer les calculs sur les trois derniers mois, c’est
+--la date de retour de l’exemplaire qui est prise en compte.
 SELECT Isbn, Numero_exemplaire, Max(Date_retour)
 FROM Details
 WHERE Add_months(Sysdate, -3) > Date_retour
 GROUP BY ROLLUP (Isbn, Numero_exemplaire);
 
 -- III - 3
+-- la liste des ouvrages pour lesquels il n’existe pas d’exemplaires à l’état
+-- neuf.
 SELECT Unique(Isbn)
 FROM Exemplaire
 WHERE Etat != 'neuf'
 GROUP BY Isbn, Etat;
 
 -- III - 4
+-- tous les titres qui contiennent le mot « mer » quelque soit sa place dans le
+-- titre et la casse avec laquelle il est renseigné.
 SELECT Titre
 FROM Ouvrage
 WHERE Titre LIKE '%mer%';
 
 -- III - 5
+-- une requête qui permet de connaître tous les auteurs dont le nom possède la
+-- particule « de »
 SELECT Auteur
 FROM Ouvrage
 WHERE Auteur LIKE '% de %';
 
 -- III - 6
+-- A partir des genres des livres, affichez le public de chaque ouvrage
 SELECT Titre, Auteur, Genre,
     CASE
         WHEN Genre='BD' THEN 'Jeunesse'
@@ -60,15 +58,18 @@ COMMENT ON TABLE Emprunts IS 'Fiche d’emprunt de livres, toujours associée à
 COMMENT ON TABLE Details IS 'Chaque ligne correspond à un livre emprunté';
 
 -- III - 8
+-- Interrogez les commentaires associés aux tables présentes
 SELECT *
 FROM User_tab_comments;
 
--- III - 9 -- TODO : pas compris
+-- III - 9 -- Fais dans le script de création de la table membre
 
 -- III - 10
+-- Suppression de la table des détails
 DROP TABLE Details CASCADE CONSTRAINTS;
 
--- III - 11 -- TODO : marche en live oracle mais a tester à la fac
+-- III - 11 --
+-- Annulez cette suppression de table
 Flashback TABLE Details TO BEFORE DROP;
 -- III - 13
 SELECT Titre, Auteur,
