@@ -51,7 +51,22 @@ BEGIN
 END;
 /
 
---TODO Q5
+-- Partie VI Q5
+CREATE OR REPLACE TRIGGER update_etat_emprunt BEFORE UPDATE ON Exemplaire
+FOR EACH ROW
+WHEN (old.Nombre_emprunts != new.Nombre_emprunts)
+
+BEGIN
+    CASE
+        WHEN :new.Nombre_emprunts<=10 THEN :new.Etat := 'Neuf';
+        WHEN :new.Nombre_emprunts<=25 THEN :new.Etat := 'Bon';
+        WHEN :new.Nombre_emprunts<=40 THEN :new.Etat := 'Moyen';
+        WHEN :new.Nombre_emprunts<=60 THEN :new.Etat := 'Douteux';
+        ELSE :new.Etat := 'Mauvais';
+    END CASE;
+END;
+/
+
 
 -- Partie VI Q6 --TODO A TESTER
 CREATE OR REPLACE TRIGGER check_expl AFTER DELETE ON Details
