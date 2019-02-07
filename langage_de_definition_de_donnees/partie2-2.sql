@@ -30,7 +30,7 @@ WHERE Date_retour IS NULL);
 
 -- II - 8
 
-DELETE FROM Exemplaire where Etat='MA';
+DELETE FROM Exemplaire WHERE Etat='MA';
 
 -- II - 9
 SELECT Titre FROM Ouvrage;
@@ -60,7 +60,7 @@ WHERE Emprunts.Id_emprunt = Details.Id_emprunt AND Ouvrage.Isbn = Details.Isbn
 GROUP BY Ouvrage.Genre;
 
 -- II - 14
-SELECT Details.Isbn, Ouvrage.Titre, Count(*) nombre_emprunts
+SELECT Details.Isbn, Ouvrage.Titre, Count(*) Nombre_emprunts
 FROM Details, Ouvrage
 WHERE Round(Months_between(Sysdate,Details.Date_retour))<='12' AND Ouvrage.Isbn = Details.Isbn
 GROUP BY Details.Isbn, Ouvrage.Titre
