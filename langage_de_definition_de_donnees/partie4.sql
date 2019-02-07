@@ -47,18 +47,18 @@ END;
 --------------------------------------------------------------------------------
 DECLARE
     CURSOR C_order_croissant IS
-        SELECT Emprunts.Id_membre, Count(*)
+        SELECT Emprunts.Id_membre, Count(*) coun
         FROM Emprunts, Details
         WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Months_between(Sysdate, Emprunts.Cree_le) <=10
         GROUP BY Emprunts.Id_membre
-        ORDER BY 1 ASC;
+        ORDER BY coun ASC;
 
     CURSOR C_order_decroissant IS
-        SELECT Emprunts.Id_membre, Count(*)
+        SELECT Emprunts.Id_membre, Count(*) coun
         FROM Emprunts, Details
         WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Months_between(Sysdate, Emprunts.Cree_le) <=10
         GROUP BY Emprunts.Id_membre
-        ORDER BY 1 DESC;
+        ORDER BY coun DESC;
 
     V_reception C_order_croissant%Rowtype;
     Iterator number;
@@ -75,7 +75,7 @@ BEGIN
         SELECT * INTO V_membre
         FROM Membre
         WHERE Id_membre=V_reception.Id_membre;
-        Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.Nom);
+        Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_reception.coun||' Nom:   '||V_membre.Nom);
     END LOOP;
     CLOSE C_order_croissant;
 
@@ -91,7 +91,7 @@ BEGIN
         SELECT * INTO V_membre
         FROM Membre
         WHERE Id_membre=V_reception.Id_membre;
-        Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.Nom);
+        Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_reception.coun||' Nom:   '||V_membre.Nom);
     END LOOP;
     CLOSE C_order_decroissant;
 END;
