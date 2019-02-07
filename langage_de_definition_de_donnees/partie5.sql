@@ -1,4 +1,4 @@
--- PARTIE V Q1
+-- V - 1
 CREATE OR REPLACE FUNCTION Finvalidite (Num_adhe IN NUMBER)
     RETURN DATE
     IS
@@ -17,16 +17,7 @@ BEGIN
     RETURN V_finval;
 END;
 /
---CODE POUR TESTER LA FONCTION
---DECLARE
---  d DATE;
---BEGIN
---  d := FinValidite(4);
---  dbms_output.put_line(d);
---END;
---/
-
--- PARTIE V Q2
+-- V - 2
 CREATE OR REPLACE FUNCTION Adhesionajour (Num_adhe IN NUMBER)
   RETURN BOOLEAN
 AS
@@ -38,16 +29,8 @@ BEGIN
     END IF;
 END;
 /
---CODE POUR TESTER LA FONCTION
--- DECLARE
---   d BOOLEAN;
--- BEGIN
---   d := AdhesionAjour(3);
---   dbms_output.put_line(d);
--- END;
--- /
 
--- PARTIE V Q3
+-- V - 3
 CREATE OR REPLACE PROCEDURE Retourexemplaire (Num_isbn IN VARCHAR2, Num_exemplaire IN NUMBER)
 AS
 BEGIN
@@ -56,7 +39,7 @@ BEGIN
 END;
 /
 
--- PARTIE V Q4
+-- V - 4
 CREATE OR REPLACE PROCEDURE Purgemembres AS
     CURSOR C_membre IS
     SELECT Id_membre
@@ -70,7 +53,7 @@ BEGIN
 END;
 /
 
--- PARTIE V Q5
+-- V - 5
 CREATE OR REPLACE FUNCTION Mesureactivite (V_periode IN number)
 RETURN number IS
     CURSOR C_activite(V_periode IN number) IS
@@ -88,7 +71,7 @@ BEGIN
 END;
 /
 
--- PARTIE V Q6
+-- V - 6
 CREATE OR REPLACE FUNCTION Empruntmoyen (V_idmembre IN number)
 RETURN number IS
     V_emprunt_moyen number;
@@ -100,7 +83,7 @@ BEGIN
 END;
 /
 
--- PARTIE V Q7 --
+-- V - 7
 CREATE OR REPLACE FUNCTION Dureemoyenne (V_num_isbn IN VARCHAR2, V_num_exemplaire IN NUMBER DEFAULT NULL) AS
     V_duree NUMBER;
 BEGIN
@@ -117,7 +100,8 @@ BEGIN
 END;
 /
 
--- PARTIE V Q8 -- TODO a faire tt les 15 jours... don t know...
+-- V - 8
+-- TODO faire un job avec dbms scheduler, pas les droits.
 CREATE OR REPLACE PROCEDURE Majeetatexemplaire AS
 CURSOR C_exemplaire IS SELECT * FROM Exemplaire FOR UPDATE OF Etat;
 V_etat_emprunt Exemplaire.Etat%TYPE;
@@ -144,7 +128,7 @@ END;
 /
 
 
--- PARTIE V Q9
+-- V - 9
 CREATE OR REPLACE FUNCTION Ajoutemembre (V_nom IN VARCHAR2, V_prenom IN VARCHAR2, V_adresse IN Varchar2, V_telephone IN VARCHAR2, V_date_adhesion IN date, V_duree IN number)
 RETURN number AS
     V_id number;
@@ -154,7 +138,7 @@ BEGIN
 END;
 /
 
--- PARTIE V Q10
+-- V - 10
 CREATE OR REPLACE PROCEDURE Supprimeexemplaire (V_num_isbn number, V_num_exemplaire number)
 AS
 V_nombre_livre_empruntes Number(3);
@@ -170,7 +154,7 @@ WHERE Details.Isbn = V_num_isbn;
 END;
 /
 
--- PARTIE V Q11
+-- V - 11
 CREATE OR REPLACE PROCEDURE Empruntexpress (V_membre number, V_num_isbn number, V_num_exemplaire number)
 AS
 V_emprunt Emprunts.Id_emprunt%TYPE;
@@ -180,3 +164,6 @@ BEGIN
     INSERT INTO Details(Id_emprunt,	Numero_livre_emprunt, Isbn, Numero_exemplaire) VALUES(V_emprunt, 1, V_num_isbn, V_num_exemplaire);
 END;
 /
+
+-- V - 12
+--CF fichier package_livre.sql
