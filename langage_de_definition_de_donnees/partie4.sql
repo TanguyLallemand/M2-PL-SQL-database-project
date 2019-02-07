@@ -12,16 +12,12 @@ BEGIN
         WHERE Details.Isbn=V_exemplaire.Isbn
         AND Details.Numero_exemplaire=V_exemplaire.Numero_exemplaire;
         IF (V_nombre<=10)
-        THEN
-            V_etat :='NE';
+        THEN V_etat :='NE';
         ELSE IF (V_nombre<=25)
-        THEN
-            V_etat :='BO';
+        THEN V_etat :='BO';
         ELSE IF (V_nombre<=40)
-            THEN
-                V_etat :='MO';
-            ELSE
-                V_etat :='MA';
+            THEN V_etat :='MO';
+            ELSE V_etat :='MA';
             END IF;
         END IF;
     END IF;
@@ -116,7 +112,7 @@ BEGIN
     FOR Iterator IN 1..3 LOOP
         FETCH C_order_croissant INTO V_reception;
         IF C_order_croissant%NOTFOUND
-        THEN Exit;
+            THEN Exit;
         END IF;
         SELECT * INTO V_membre
         FROM Membre
@@ -131,7 +127,7 @@ BEGIN
     FOR Iterator IN 1..3 LOOP
         FETCH C_order_decroissant INTO V_reception;
         IF C_order_decroissant%NOTFOUND
-        THEN Exit;
+            THEN Exit;
         END IF;
         SELECT * INTO V_membre
         FROM Membre
@@ -163,7 +159,7 @@ END;
 /
 
 -- IV - 5 -- J ai refait la requete, plus otpimisé qu un bloc pl/sql a voir...
-SELECT Numero, Nom
+SELECT Id_membre, Nom
 FROM Membre
 WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
 
@@ -204,9 +200,9 @@ BEGIN
         WHERE Nombre_emprunts BETWEEN 26 AND 40;
         UPDATE Exemplaire SET Etat='Mauvais'
         WHERE Nombre_emprunts >=41;
-        END LOOP
-        COMMIT;
-    END;
+    END LOOP
+    COMMIT;
+END;
 /
 
 -- IV - 7 --
@@ -251,5 +247,29 @@ BEGIN
         DELETE FROM Membre WHERE Id_membre = V_membre_sans_emprunt.Id_membre;
     END LOOP;
     COMMIT;
+END;
+/
+
+-- IV - 9 -- fonctionel mais inutile
+ALTER table membre modify (Telephone Varchar2(14));
+DECLARE
+    cursor c_membre is
+        SELECT Telephone
+        from membre
+        for update of Telephone;
+        v_nouveau_telephone membre.Telephone%type;
+BEGIN
+    for v_membre in c_membre LOOP
+        if (INSTR(v_membre.Telephone, ' ') !=2) then
+            v_nouveau_telephone:=substr(v_membre.Telephone,1,2)||' '||
+                substr(v_membre.Telephone,3,2)||' '||
+                substr(v_membre.Telephone,5,2)||' '||
+                substr(v_membre.Telephone,7,2)||' '||
+                substr(v_membre.Telephone,9,2);
+            update membre
+            set Telephone=v_nouveau_telephone
+            WHERE current of c_membre;
+        end if;
+    end loop;
 END;
 /
