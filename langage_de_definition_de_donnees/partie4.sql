@@ -167,8 +167,20 @@ SELECT Numero, Nom
 FROM Membre
 WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
 
+-- IV - 6 --
 
-
+-- alteration de la table pour supporter la nouvelle approche
+ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprunt date DEFAULT Sysdate);
+-- Mise a jour de la TABLE
+UPDATE Exemplaire SET Datecalculemprunt=(
+    SELECT Min(Cree_le)
+    FROM Emprunts, Details
+    WHERE Emprunts.Id_emprunt=Details.Id_emprunt
+    AND Details.Isbn=Exemplaire.Numero_exemplaire
+    );
+    UPDATE Exemplaire SET Datecalculemprunt = Sysdate
+    WHERE Datecalculemprunt is null;
+    COMMIT;
 -- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 DECLARE
 CURSOR C_membre_sans_emprunt IS
