@@ -1,3 +1,19 @@
+-- Partie VI Q1
+CREATE OR REPLACE TRIGGER dernier_exemplaire AFTER delete ON Exemplaire
+FOR EACH ROW
+
+DECLARE
+nbr_exemplaire_restant Number;
+BEGIN
+select count(*) INTO nbr_exemplaire_restant
+FROM Exemplaire
+WHERE exemplaire.isbn = :old.isbn;
+    IF nbr_exemplaire_restant = 0 THEN
+        DELETE FROM Ouvrage WHERE Isbn = :old.isbn;
+    END IF;
+END;
+/
+
 -- Partie VI Q2
 CREATE OR REPLACE TRIGGER valid_emprunt BEFORE INSERT ON Emprunts
 FOR EACH ROW
