@@ -196,15 +196,23 @@ CREATE OR REPLACE FUNCTION AnalyseActivite (
   END;
 /
 
+-- Partie VI Q9
 
-SET serveroutput ON size 30000;
-
+CREATE OR REPLACE TRIGGER Ver_detail
+  BEFORE INSERT ON Details
+  FOR EACH ROW
 DECLARE
-util VARCHAR2(4) := 'BIO3';
-date_ DATE := sysdate;
-nb NUMBER;
+  v_etat Emprunts.Etat_emprunt%TYPE;
+
 BEGIN
-  nb := AnalyseActivite(util,sysdate);
-  dbms_output.put_line(nb);
+  SELECT Etat_emprunt INTO v_etat
+  FROM Emprunts
+  WHERE Id_emprunt = :new.Id_emprunt;
+
+  IF(v_etat != 'EC') THEN
+    RAISE_APPLICATION_ERROR(-2012, 'Tous les exemplaires de cette emprunt ont été rendus, créer un nouvel emprunt');
+  END IF;
 END;
+/
+;
 /
