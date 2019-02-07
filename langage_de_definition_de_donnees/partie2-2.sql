@@ -13,6 +13,9 @@ WHERE Id_emprunt NOT IN (SELECT Id_emprunt
 FROM Details
 WHERE Date_retour IS NULL);
 
+-- II - 8
+
+DELETE FROM Exemplaire where Etat='MA';
 
 -- II - 9
 SELECT Titre FROM Ouvrage;
