@@ -29,7 +29,7 @@ question 15 DONE
 question 16 DONE
 question 17 DONE
 question 18 DONE
-question 19
+question 19 DONE
 question 20
 
     PARTIE III
@@ -79,5 +79,5 @@ question 4 DONE
 question 5
 question 6 DONE
 question 7 DONE
-question 8
+question 8 DONE
 question 9
