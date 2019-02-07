@@ -206,10 +206,31 @@ BEGIN
         WHERE Nombre_emprunts >=41;
         END LOOP
         COMMIT;
-    end;
+    END;
 /
--- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
+
+-- IV - 7 --
 DECLARE
+    V_nombre_ouvrage number (4);
+    V_total_ouvrage number (4);
+BEGIN
+    SELECT Count(*) INTO V_nombre_ouvrage
+    FROM Exemplaire
+    WHERE Etat='Mauvais' OR Etat='Moyen';
+    SELECT Count(*) INTO V_total_ouvrage
+    FROM Exemplaire;
+    IF (V_nombre_ouvrage>V_total_ouvrage/2) THEN
+        EXECUTE IMMEDIATE 'alter table exemplaire drop constraint constraint_check_etat';
+        EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''Neuf'', ''Bon'', ''Moyen'', ''Douteux'', ''Mauvais'')';
+        UPDATE Exemplaire SET Etat='Douteux'
+        WHERE Nombre_emprunts BETWEEN 41 AND 60;
+        COMMIT;
+    END IF;
+END;
+/
+
+
+-- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 CURSOR C_membre_sans_emprunt IS
 SELECT Id_membre
 FROM Membre

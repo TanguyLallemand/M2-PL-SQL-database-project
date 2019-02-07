@@ -32,7 +32,7 @@ CREATE TABLE Exemplaire
 	Isbn Varchar2(13) NOT NULL,
 	Numero_exemplaire Number(2) NOT NULL,
 	Etat Varchar2(8) DEFAULT 'Neuf'
-	CONSTRAINT constraint_check Check( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')),
+	CONSTRAINT constraint_check_etat Check( Etat IN('Mauvais', 'Moyen', 'Bon', 'Neuf')),
 	CONSTRAINT Isbn_ouvrage FOREIGN Key(Isbn) REFERENCES Ouvrage (Isbn),
 	CONSTRAINT Pk_exemplaire PRIMARY KEY (Numero_exemplaire,Isbn)
 );
