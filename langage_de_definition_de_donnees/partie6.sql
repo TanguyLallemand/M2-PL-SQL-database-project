@@ -63,3 +63,31 @@ BEGIN
    END IF;
 END;
 /
+
+-- Partie VI Q7
+
+ALTER TABLE Emprunts
+ADD (Cree_par VARCHAR2(20));
+
+ALTER TABLE Details
+ADD (Termine_par VARCHAR2(20));
+
+CREATE OR REPLACE TRIGGER info_create_emprunt
+  BEFORE INSERT ON Emprunts
+  FOR EACH ROW
+
+  BEGIN
+    :new.Cree_par := user();
+    :new.Cree_le := sysdate;
+  END;
+/
+
+CREATE OR REPLACE TRIGGER info_modif_emprunt
+  BEFORE INSERT ON Details
+  FOR EACH ROW
+
+  BEGIN
+    :new.Termine_par := user();
+    :new.Date_retour := sysdate;
+  END;
+/
