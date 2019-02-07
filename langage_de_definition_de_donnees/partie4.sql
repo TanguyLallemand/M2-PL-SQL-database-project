@@ -187,10 +187,10 @@ ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprun
 -- Mise a jour de la TABLE
 UPDATE Exemplaire SET Datecalculemprunt=(
     SELECT Min(Cree_le)
-    FROM Emprunts, Details
-    WHERE Emprunts.Id_emprunt=Details.Id_emprunt
-    AND Details.Isbn=Exemplaire.Numero_exemplaire
-    );
+    FROM Emprunts emp, Details det
+    WHERE emp.Id_emprunt=det.Id_emprunt
+    AND det.Isbn=Exemplaire.ISBN
+    and det.numero_exemplaire=Exemplaire.numero_exemplaire);
     UPDATE Exemplaire SET Datecalculemprunt = Sysdate
     WHERE Datecalculemprunt IS NULL;
     COMMIT;
@@ -206,7 +206,7 @@ BEGIN
         SELECT Count(*) INTO V_nombre_emprunts
         FROM Details, Emprunts
         WHERE Details.Id_emprunt=Emprunts.Id_emprunt
-            AND Isbn=V_exemplaire.Numero_exemplaire
+            AND Isbn=V_exemplaire.isbn
             AND Cree_le>=V_exemplaire.Datecalculemprunt;
         -- Mise a jour de l'etat des livres en fonctions du nombre d'emprunts
         UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
