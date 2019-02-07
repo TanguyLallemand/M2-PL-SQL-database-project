@@ -94,6 +94,7 @@ BEGIN
         Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_reception.coun||' Nom:   '||V_membre.Nom);
     END LOOP;
     CLOSE C_order_decroissant;
+    COMMIT;
 END;
 /
 --------------------------------------------------------------------------------
@@ -118,6 +119,7 @@ BEGIN
         Dbms_output.Put_line('Numero: ' ||Iterator||' Isbn: '||V_ouvrage.Isbn);
     END LOOP;
     CLOSE C_ouvrages;
+    COMMIT;
 END;
 /
 --------------------------------------------------------------------------------
@@ -125,7 +127,7 @@ END;
 -- liste des membres dont l’adhésion a expiré, ou bien qui va expirer dans les
 -- 30 prochains jours.
 --------------------------------------------------------------------------------
-SELECT Id_membre, Nom
+SELECT Id_membre, Nom, Date_adhesion, Duree
 FROM Membre
 WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
 --------------------------------------------------------------------------------
@@ -162,18 +164,18 @@ BEGIN
         UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
         WHERE CURRENT OF C_exemplaire;
         CASE
-        WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Neuf';
-        WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
-        WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Moyen';
-    ELSE UPDATE Exemplaire SET Exemplaire.Etat ='Mauvais';
+            WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Neuf';
+            WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
+            WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Moyen';
+            ELSE UPDATE Exemplaire SET Exemplaire.Etat ='Mauvais';
         END CASE;
     END LOOP
-    -- On repercute les changement dans la base de donne
+    -- On repercute les changement dans la base de données
     COMMIT;
 END;
 /
 --------------------------------------------------------------------------------
--- IV - 7 --
+-- IV - 7 -- TODO ça n'a aucun sens ces conneries ça va dégager (et violemment)
 -- permet de mettre à jour les informations sur la table des exemplaires.
 --------------------------------------------------------------------------------
 DECLARE
@@ -194,8 +196,8 @@ BEGIN
         EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''Neuf'', ''Bon'', ''Moyen'', ''Douteux'', ''Mauvais'')';
         UPDATE Exemplaire SET Etat='Douteux'
         WHERE Nombre_emprunts BETWEEN 41 AND 60;
-        COMMIT;
     END IF;
+    COMMIT;
 END;
 /
 
@@ -203,16 +205,17 @@ END;
 -- IV - 8 --
 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 --------------------------------------------------------------------------------
-CURSOR C_membre_sans_emprunt IS
-SELECT Id_membre
-FROM Membre
-WHERE Id_membre NOT IN
-(SELECT Unique(Id_membre) AS Idtest
-FROM
-    (SELECT Id_membre, Max(Cree_le) AS Dernier_emprunt
-    FROM Emprunts
-    GROUP BY Id_membre)
-WHERE Dernier_emprunt > Add_months(Sysdate, 12*-3));
+DECLARE
+    CURSOR C_membre_sans_emprunt IS
+        SELECT Id_membre
+        FROM Membre
+        WHERE Id_membre NOT IN
+            (SELECT Unique(Id_membre) AS Idtest
+            FROM
+                (SELECT Id_membre, Max(Cree_le) AS Dernier_emprunt
+                FROM Emprunts
+                GROUP BY Id_membre)
+            WHERE Dernier_emprunt > Add_months(Sysdate, 12*-3));
 
     V_membre_sans_emprunt C_membre_sans_emprunt%Rowtype;
 
@@ -226,7 +229,7 @@ BEGIN
 END;
 /
 --------------------------------------------------------------------------------
--- IV - 9 -- fonctionel mais inutile
+-- IV - 9 -- fonctionel mais inutile et bullshit
 -- permet de s’assurer que tous les numéros de téléphone mobile
 -- des membres respectent le format 06 xx xx xx xx.
 --------------------------------------------------------------------------------
@@ -250,5 +253,6 @@ BEGIN
             WHERE CURRENT OF C_membre;
         END IF;
     END LOOP;
+    COMMIT;
 END;
 /
