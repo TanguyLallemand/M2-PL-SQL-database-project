@@ -74,6 +74,34 @@ order by nom, prenom asc;
 
 -- II - 19
 
+create global temporary table emprunts_titre(
+ISBN char(13),
+exemplaire number,
+nbr_emprunts_exemplaire number,
+nbr_emprunts_ouvrage number)
+on commit preserve rows;
+
+insert into emprunts_titre(
+isbn, exemplaire, nbr_emprunts_exemplaire)
+select isbn, Numero_exemplaire, count(*)
+from details
+group by isbn, Numero_exemplaire;
+
+DECLARE
+CURSOR C_emprunts_ouvrage IS
+select isbn,SUM(emprunts_titre.nbr_emprunts_exemplaire) emprunts_ouvrage
+from emprunts_titre
+group by isbn;
+nbr_emprunts_cursor C_emprunts_ouvrage%Rowtype;
+
+BEGIN
+FOR ligne IN C_emprunts_ouvrage
+    LOOP
+    update emprunts_titre set nbr_emprunts_ouvrage=ligne.emprunts_ouvrage where emprunts_titre.isbn=ligne.isbn;
+    END LOOP;
+END;
+/
+
 -- II - 20
 select Libelle
 from genre;
