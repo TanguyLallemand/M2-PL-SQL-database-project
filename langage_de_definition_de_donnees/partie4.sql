@@ -179,8 +179,35 @@ UPDATE Exemplaire SET Datecalculemprunt=(
     AND Details.Isbn=Exemplaire.Numero_exemplaire
     );
     UPDATE Exemplaire SET Datecalculemprunt = Sysdate
-    WHERE Datecalculemprunt is null;
+    WHERE Datecalculemprunt IS NULL;
     COMMIT;
+-- Mise a jour des informations du nombre d'emprunts et de l'etat des ouvrages
+DECLARE
+    CURSOR C_exemplaire IS
+        SELECT * FROM Exemplaire
+        FOR UPDATE OF Nombre_emprunts, Datecalculemprunt;
+    V_nombre_emprunts Exemplaire.Nombre_emprunts%TYPE;
+BEGIN
+    FOR V_exemplaire IN C_exemplaire LOOP
+        SELECT Count(*) INTO V_nombre_emprunts
+        FROM Details, Emprunts
+        WHERE Details.Id_emprunt=Emprunts.Id_emprunt
+            AND Isbn=V_exemplaire.Numero_exemplaire
+            AND Cree_le>=V_exemplaire.Datecalculemprunt;
+        UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
+        WHERE CURRENT OF C_exemplaire;
+        UPDATE Exemplaire SET Etat='Neuf'
+        WHERE Nombre_emprunts<=10;
+        UPDATE Exemplaire SET Etat='Bon'
+        WHERE Nombre_emprunts BETWEEN 11 AND 25;
+        UPDATE Exemplaire SET Etat='Moyen'
+        WHERE Nombre_emprunts BETWEEN 26 AND 40;
+        UPDATE Exemplaire SET Etat='Mauvais'
+        WHERE Nombre_emprunts >=41;
+        END LOOP
+        COMMIT;
+    end;
+/
 -- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 DECLARE
 CURSOR C_membre_sans_emprunt IS
