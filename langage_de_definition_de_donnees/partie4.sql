@@ -211,14 +211,12 @@ BEGIN
         -- Mise a jour de l'etat des livres en fonctions du nombre d'emprunts
         UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
         WHERE CURRENT OF C_exemplaire;
-        UPDATE Exemplaire SET Etat='Neuf'
-        WHERE Nombre_emprunts<=10;
-        UPDATE Exemplaire SET Etat='Bon'
-        WHERE Nombre_emprunts BETWEEN 11 AND 25;
-        UPDATE Exemplaire SET Etat='Moyen'
-        WHERE Nombre_emprunts BETWEEN 26 AND 40;
-        UPDATE Exemplaire SET Etat='Mauvais'
-        WHERE Nombre_emprunts >=41;
+        CASE
+        WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Neuf';
+        WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
+        WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Moyen';
+    ELSE UPDATE Exemplaire SET Exemplaire.Etat ='Mauvais';
+        END CASE;
     END LOOP
     -- On repercute les changement dans la base de donne
     COMMIT;
