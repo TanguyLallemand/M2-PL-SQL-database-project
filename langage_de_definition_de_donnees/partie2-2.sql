@@ -29,14 +29,17 @@ from ouvrage
 group by genre
 
 -- II - 12
-SELECT SUM(Date_retour-Cree_le)/COUNT(C.ID_EMPRUNT)
-FROM emprunts C, details T
-WHERE C.ID_EMPRUNT = T.ID_EMPRUNT;
+SELECT nom, prenom, M.ID_membre, SUM(Date_retour-Cree_le)/COUNT(*) as temps_moyen_emprunt
+FROM emprunts C, details T, membre M
+WHERE C.ID_EMPRUNT = T.ID_EMPRUNT and M.ID_membre = C.ID_membre
+group by M.ID_membre, M.nom, M.prenom
+order by ID_membre
 
 -- II - 13
-SELECT SUM(Date_retour-Cree_le)/COUNT(C.ID_EMPRUNT)
-FROM emprunts C, details T, genre G
-WHERE C.ID_EMPRUNT = T.ID_EMPRUNT AND G.CODE == 'REC'; //TODO Faut-il prevoir une automatisation de la requete sur chacun des genres ?
+select genre, SUM(Date_retour-Cree_le)/COUNT(*)
+from emprunts, details, ouvrage
+where emprunts.ID_EMPRUNT = details.ID_EMPRUNT and ouvrage.ISBN = details.ISBN
+group by ouvrage.genre;
 
 -- II - 14
 SELECT COUNT(ID_EMPRUNT) AS nbr_pret, ID_EMPRUNT FROM details
@@ -44,6 +47,12 @@ WHERE ROUND(MONTHS_BETWEEN(SYSDATE,date_retour))<='12'
 GROUP BY ID_EMPRUNT
 HAVING COUNT(ID_EMPRUNT) > 1
 ORDER BY ID_EMPRUNT;
+-- en cours
+select details.isbn, ouvrage.titre
+from details, ouvrage
+WHERE ROUND(MONTHS_BETWEEN(SYSDATE,details.date_retour))<='12' and ouvrage.isbn = details.isbn
+group by details.isbn
+HAVING COUNT(*) > 4
 
 -- II - 15
 SELECT O.ISBN, E.Numero_exemplaire
@@ -59,11 +68,9 @@ FROM emprunts E, details D
 WHERE E.ID_emprunt = D.ID_emprunt AND D.Date_retour is NULL
 GROUP BY E.ID_membre;
 
---Vue crée, comment on l'active ?
-
 -- II - 17
 CREATE or replace view nbr_emprunt as
-select ISBN, count(*)
+select ISBN, count(*) as nbr_emprunt_en_cours
 from details
 group by ISBN;
 
