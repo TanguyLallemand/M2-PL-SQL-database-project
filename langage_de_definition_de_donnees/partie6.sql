@@ -35,22 +35,7 @@ BEGIN
 END;
 /
 
--- Partie VI Q5
-CREATE OR REPLACE TRIGGER update_etat_emprunt BEFORE UPDATE ON Exemplaire
-FOR EACH ROW
-WHEN (old.Nombre_emprunts != new.Nombre_emprunts)
-
-BEGIN
-    CASE
-        WHEN :new.Nombre_emprunts<=10 THEN :new.Etat := 'Neuf';
-        WHEN :new.Nombre_emprunts<=25 THEN :new.Etat := 'Bon';
-        WHEN :new.Nombre_emprunts<=40 THEN :new.Etat := 'Moyen';
-        WHEN :new.Nombre_emprunts<=60 THEN :new.Etat := 'Douteux';
-        ELSE :new.Etat := 'Mauvais';
-    END CASE;
-END;
-/
-
+--TODO Q5
 
 -- Partie VI Q6 --TODO A TESTER
 CREATE OR REPLACE TRIGGER check_expl AFTER DELETE ON Details
@@ -82,10 +67,10 @@ END;
 -- Partie VI Q7
 
 ALTER TABLE Emprunts
-ADD (Cree_par VARCHAR2(20));
+ADD (Cree_par VARCHAR2(20) DEFAULT user);
 
 ALTER TABLE Details
-ADD (Termine_par VARCHAR2(20));
+ADD (Termine_par VARCHAR2(20) DEFAULT user);
 
 CREATE OR REPLACE TRIGGER info_create_emprunt
   BEFORE INSERT ON Emprunts
@@ -211,15 +196,21 @@ CREATE OR REPLACE FUNCTION AnalyseActivite (
   END;
 /
 
+-- Partie VI Q9
 
-SET serveroutput ON size 30000;
-
+CREATE OR REPLACE TRIGGER Ver_detail
+  BEFORE INSERT ON Details
+  FOR EACH ROW
 DECLARE
-util VARCHAR2(4) := 'BIO3';
-date_ DATE := sysdate;
-nb NUMBER;
+  v_etat Emprunts.Etat_emprunt%TYPE;
+
 BEGIN
-  nb := AnalyseActivite(util,sysdate);
-  dbms_output.put_line(nb);
+  SELECT Etat_emprunt INTO v_etat
+  FROM Emprunts
+  WHERE Id_emprunt = :new.Id_emprunt;
+
+  IF(v_etat != 'EC') THEN
+    RAISE_APPLICATION_ERROR(-2012, 'Tous les exemplaires de cette emprunt ont été rendus, créer un nouvel emprunt');
+  END IF;
 END;
 /

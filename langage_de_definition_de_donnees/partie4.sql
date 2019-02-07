@@ -187,10 +187,10 @@ ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprun
 -- Mise a jour de la TABLE
 UPDATE Exemplaire SET Datecalculemprunt=(
     SELECT Min(Cree_le)
-    FROM Emprunts emp, Details det
-    WHERE emp.Id_emprunt=det.Id_emprunt
-    AND det.Isbn=Exemplaire.ISBN
-    and det.numero_exemplaire=Exemplaire.numero_exemplaire);
+    FROM Emprunts Emp, Details Det
+    WHERE Emp.Id_emprunt=Det.Id_emprunt
+    AND Det.Isbn=Exemplaire.Isbn
+    AND Det.Numero_exemplaire=Exemplaire.Numero_exemplaire);
     UPDATE Exemplaire SET Datecalculemprunt = Sysdate
     WHERE Datecalculemprunt IS NULL;
     COMMIT;
@@ -206,19 +206,17 @@ BEGIN
         SELECT Count(*) INTO V_nombre_emprunts
         FROM Details, Emprunts
         WHERE Details.Id_emprunt=Emprunts.Id_emprunt
-            AND Isbn=V_exemplaire.isbn
+            AND Isbn=V_exemplaire.Isbn
             AND Cree_le>=V_exemplaire.Datecalculemprunt;
         -- Mise a jour de l'etat des livres en fonctions du nombre d'emprunts
         UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
         WHERE CURRENT OF C_exemplaire;
-        UPDATE Exemplaire SET Etat='Neuf'
-        WHERE Nombre_emprunts<=10;
-        UPDATE Exemplaire SET Etat='Bon'
-        WHERE Nombre_emprunts BETWEEN 11 AND 25;
-        UPDATE Exemplaire SET Etat='Moyen'
-        WHERE Nombre_emprunts BETWEEN 26 AND 40;
-        UPDATE Exemplaire SET Etat='Mauvais'
-        WHERE Nombre_emprunts >=41;
+        CASE
+        WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Neuf';
+        WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
+        WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Moyen';
+    ELSE UPDATE Exemplaire SET Exemplaire.Etat ='Mauvais';
+        END CASE;
     END LOOP
     -- On repercute les changement dans la base de donne
     COMMIT;
@@ -282,25 +280,25 @@ END;
 -- permet de s’assurer que tous les numéros de téléphone mobile
 -- des membres respectent le format 06 xx xx xx xx.
 --------------------------------------------------------------------------------
-ALTER table membre modify (Telephone Varchar2(14));
+ALTER TABLE Membre MODIFY (Telephone Varchar2(14));
 DECLARE
-    cursor c_membre is
+    CURSOR C_membre IS
         SELECT Telephone
-        from membre
-        for update of Telephone;
-        v_nouveau_telephone membre.Telephone%type;
+        FROM Membre
+        FOR UPDATE OF Telephone;
+        V_nouveau_telephone Membre.Telephone%TYPE;
 BEGIN
-    for v_membre in c_membre LOOP
-        if (INSTR(v_membre.Telephone, ' ') !=2) then
-            v_nouveau_telephone:=substr(v_membre.Telephone,1,2)||' '||
-                substr(v_membre.Telephone,3,2)||' '||
-                substr(v_membre.Telephone,5,2)||' '||
-                substr(v_membre.Telephone,7,2)||' '||
-                substr(v_membre.Telephone,9,2);
-            update membre
-            set Telephone=v_nouveau_telephone
-            WHERE current of c_membre;
-        end if;
-    end loop;
+    FOR V_membre IN C_membre LOOP
+        IF (Instr(V_membre.Telephone, ' ') !=2) THEN
+            V_nouveau_telephone:=Substr(V_membre.Telephone,1,2)||' '||
+                Substr(V_membre.Telephone,3,2)||' '||
+                Substr(V_membre.Telephone,5,2)||' '||
+                Substr(V_membre.Telephone,7,2)||' '||
+                Substr(V_membre.Telephone,9,2);
+            UPDATE Membre
+            SET Telephone=V_nouveau_telephone
+            WHERE CURRENT OF C_membre;
+        END IF;
+    END LOOP;
 END;
 /

@@ -30,7 +30,7 @@ question 16 DONE
 question 17 DONE
 question 18 DONE
 question 19 DONE
-question 20
+question 20 DONE
 
     PARTIE III
 question 1 pas trop d'accord avec le DECODE on va pas mettre tous les titres en dur ça a pas de sens
@@ -80,4 +80,4 @@ question 5 DONE
 question 6 DONE
 question 7 DONE
 question 8 DONE
-question 9
+question 9 DOOONE
