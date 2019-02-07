@@ -1,6 +1,8 @@
 -- lucidchart entité-association https://www.lucidchart.com/documents/edit/1efa825f-05fa-4494-a611-318297c0b8b5/0
 -- I) Langage de Définition de Données :
 
+--Augmente le buffer afin de permettre les dbms_output
+SET serveroutput ON size 30000;
 
 CREATE SEQUENCE Uniq_id_membre
 MINVALUE 0
@@ -98,8 +100,11 @@ ALTER TABLE Details ENABLE ROW Movement;
 
 -- EXECUTE SCRIPT
 --
--- @langage_de_definition_de_donnees/script_creation.sql;
--- @langage_de_definition_de_donnees/script_insertion_donnees.sql;
+-- @langage_de_definition_de_donnees/partie1_creation.sql;
+-- @langage_de_definition_de_donnees/partie2_insertion.sql;
 -- @langage_de_definition_de_donnees/script_drop.sql;
 
 --
+
+
+--TODO : ajouter une contrainte empechant l'emprunt simultané d'un même exemplaire

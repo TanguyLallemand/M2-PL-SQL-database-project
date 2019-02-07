@@ -1,110 +1,188 @@
--- IV - 1 QUESTION : deja fait avant non?
--- IV - 2 THIS PIECE OF SHIT WORKS!!!!
+-- IV - 1 -- non fonctionnel
+DECLARE
+CURSOR C_exemplaire IS
+SELECT * FROM Exemplaire FOR UPDATE OF Etat;
+V_etat Exemplaire.Etat%TYPE;
+V_nombre Number(3);
+BEGIN
+    FOR V_exemplaire IN C_exemplaire
+    LOOP
+        SELECT Count(*) INTO V_nombre
+        FROM Details
+        WHERE Details.Isbn=V_exemplaire.Isbn
+        AND Details.Numero_exemplaire=V_exemplaire.Numero_exemplaire;
+        IF (V_nombre<=10)
+        THEN
+            V_etat :='NE';
+        ELSE IF (V_nombre<=25)
+        THEN
+            V_etat :='BO';
+        ELSE IF (V_nombre<=40)
+            THEN
+                V_etat :='MO';
+            ELSE
+                V_etat :='MA';
+            END IF;
+        END IF;
+    END IF;
+    UPDATE Exemplaire SET Etat=V_etat WHERE CURRENT OF C_exemplaire;
+END LOOP;
+END;
+/
+
+-- IV - 2
 DECLARE
     -- curseur avec la liste des membres expirés
-    CURSOR c_membre_expi
+    CURSOR C_membre_expi
         IS SELECT *
-        FROM MEMBRE
-        WHERE ADD_MONTHS(Date_adhesion, Duree) < sysdate FOR UPDATE;
+        FROM Membre
+        WHERE Add_months(Date_adhesion, Duree) < Sysdate FOR UPDATE;
     -- variable temp pour les membres de la liste
-    v_membre_expi c_membre_expi%ROWTYPE;
+    V_membre_expi C_membre_expi%Rowtype;
 
     -- curseur pour les emprunts des membres expirés
-    CURSOR c_emprunts_membre(v_ID_membre EMPRUNTS.ID_membre%TYPE := NULL)
-        IS SELECT ID_emprunt, ID_membre
-        FROM emprunts
-        WHERE ID_membre = v_ID_membre FOR UPDATE of ID_membre;
+    CURSOR C_emprunts_membre(V_id_membre Emprunts.Id_membre%TYPE := NULL)
+        IS SELECT Id_emprunt, Id_membre
+        FROM Emprunts
+        WHERE Id_membre = V_id_membre FOR UPDATE OF Id_membre;
     -- variable temp pour les emprunts de la liste
-    v_emprunts_membre c_emprunts_membre%ROWTYPE;
+    V_emprunts_membre C_emprunts_membre%Rowtype;
 
     -- curseur pour les details d'un emprunt
-    CURSOR c_detail_emprunt(v_ID_emprunt EMPRUNTS.ID_emprunt%TYPE)
-        IS SELECT count(*) as coun
-        FROM details
-        WHERE Etat_Emprunt = 'EC' and ID_emprunt = v_ID_emprunt;
+    CURSOR C_detail_emprunt(V_id_emprunt Emprunts.Id_emprunt%TYPE)
+        IS SELECT Count(*) AS Coun
+        FROM Details
+        WHERE Etat_emprunt = 'EC' AND Id_emprunt = V_id_emprunt;
 
     -- variable temp pour les details des emprunts de la liste
-    v_detail_emprunt c_detail_emprunt%ROWTYPE;
+    V_detail_emprunt C_detail_emprunt%Rowtype;
 
     -- boolean to know if we delete or not
-    EC_present Boolean;
+    Ec_present Boolean;
 BEGIN
     BEGIN
-        FOR v_membre_expi IN c_membre_expi
+        FOR V_membre_expi IN C_membre_expi
         LOOP
-            EC_present := FALSE;
-            dbms_output.put_line(v_membre_expi.nom);
-            FOR v_emprunts_membre IN c_emprunts_membre(v_membre_expi.ID_membre)
+            Ec_present := FALSE;
+            Dbms_output.Put_line(V_membre_expi.Nom);
+            FOR V_emprunts_membre IN C_emprunts_membre(V_membre_expi.Id_membre)
             LOOP
-                dbms_output.put_line(v_emprunts_membre.ID_emprunt);
-                OPEN c_detail_emprunt(v_emprunts_membre.ID_emprunt);
-                FETCH c_detail_emprunt INTO v_detail_emprunt;
-                dbms_output.put_line(v_detail_emprunt.coun || 'cout');
-                IF v_detail_emprunt.coun = 0 THEN
-                    EC_present := TRUE;
+                Dbms_output.Put_line(V_emprunts_membre.Id_emprunt);
+                OPEN C_detail_emprunt(V_emprunts_membre.Id_emprunt);
+                FETCH C_detail_emprunt INTO V_detail_emprunt;
+                Dbms_output.Put_line(V_detail_emprunt.Coun || 'cout');
+                IF V_detail_emprunt.Coun = 0 THEN
+                    Ec_present := TRUE;
                 END IF;
-                CLOSE c_detail_emprunt;
+                CLOSE C_detail_emprunt;
             END LOOP;
-            IF EC_present = FALSE THEN
-                FOR v_emprunts_membre IN c_emprunts_membre(v_membre_expi.ID_membre)
+            IF Ec_present = FALSE THEN
+                FOR V_emprunts_membre IN C_emprunts_membre(V_membre_expi.Id_membre)
                 LOOP
-                    UPDATE EMPRUNTS SET ID_membre := NULL
-                    WHERE CURRENT OF c_emprunts_membre;
+                    UPDATE Emprunts SET Id_membre := NULL
+                    WHERE CURRENT OF C_emprunts_membre;
                 END LOOP;
-                delete from membre where current of c_membre_expi;
+                DELETE FROM Membre WHERE CURRENT OF C_membre_expi;
             END IF;
         END LOOP;
     END;
     COMMIT;
 END;
 /
--- IV - 3 -- TODO repasser en plsql
--- selectionne les ID de 3 membres qui ont le plus emprunté ça me casse les couille je laisse en plan pour le moment
-SELECT ID_membre
-FROM (select ID_membre, sum(cou)
-        from emprunts join (select ID_emprunt, count(*) as cou
-                        from details
-                        group by ID_emprunt
-                        order by ID_emprunt) tttt
-                    ON emprunts.ID_emprunt = tttt.ID_emprunt
-        where ADD_MONTHS(sysdate, -10) < Cree_le
-        group by ID_membre
-        order by sum(cou))
-WHERE rownum <= 3
+-- IV - 3
 
--- IV - 4 -- TODO repasser en plsql
-SELECT *
-FROM OUVRAGE
-WHERE ISBN IN (
-  SELECT ISBN
-  FROM DETAILS
-  GROUP BY ISBN
-  ORDER BY count(*) DESC
-  FETCH FIRST 5 ROWS ONLY);
--- IV - 5 -- TODO repasser en plsql
-select *
-from membre
-where ADD_MONTHS(Date_adhesion, Duree) < (sysdate+30)
+Set serveroutput on
+DECLARE
+    CURSOR c_order_croissant is
+        select emprunts.Id_membre, count(*)
+        from emprunts, Details
+        WHERE emprunts.Id_emprunt=Details.Id_emprunt and months_between(Sysdate, emprunts.Cree_le) <=10
+        GROUP by emprunts.Id_membre
+        ORDER by 2 ASC;
+
+    CURSOR c_order_decroissant is
+        select emprunts.Id_membre, count(*)
+        from emprunts, Details
+        WHERE emprunts.Id_emprunt=Details.Id_emprunt and months_between(Sysdate, emprunts.Cree_le) <=10
+        GROUP by emprunts.Id_membre
+        ORDER by 2 DESC;
+
+    v_reception c_order_croissant%Rowtype;
+    iterator number;
+    V_membre Membre%Rowtype;
+BEGIN
+    Dbms_output.Put_line('Membres empruntant le moins:');
+    OPEN c_order_croissant;
+    for iterator in 1..3 LOOP
+        FETCH c_order_croissant into v_reception;
+        select * into V_membre
+        FROM Membre
+        where Id_membre=v_reception.Id_membre;
+        Dbms_output.Put_line(iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.nom);
+    end loop;
+    CLOSE c_order_croissant;
+
+
+    Dbms_output.Put_line('Membres empruntant le plus:');
+    OPEN c_order_decroissant;
+    for iterator in 1..3 LOOP
+        FETCH c_order_decroissant into v_reception;
+        select * into V_membre
+        FROM Membre
+        where Id_membre=v_reception.Id_membre;
+        Dbms_output.Put_line(iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.nom);
+    end loop;
+    CLOSE c_order_decroissant;
+END;
+/
+
+-- IV - 4 --
+DECLARE
+    CURSOR C_ouvrages IS
+    SELECT Isbn, count(*) AS numbre_emprunts
+    from Details
+    group by Isbn
+    order by 2 DESC;
+
+    v_ouvrage C_ouvrages%Rowtype;
+    iterator number;
+BEGIN
+    OPEN C_ouvrages;
+    for iterator in 1..5 LOOP
+        FETCH C_ouvrages into v_ouvrage;
+        Dbms_output.Put_line('Numero: ' ||iterator||' Isbn: '||v_ouvrage.isbn);
+    end loop;
+    CLOSE C_ouvrages;
+end;
+/
+
+-- IV - 5 -- J ai refait la requete, plus otpimisé qu un bloc pl/sql a voir...
+SELECT numero, nom
+FROM Membre
+WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
+
+
+
 -- IV - 8 -- supprime les membres qui n'ont pas emprunté depuis 3 ans ou bien jamais emprunté
 DECLARE
-CURSOR c_membre_sans_emprunt IS
-select id_membre
-from membre
-where id_membre not in
-(select unique(ID_membre) as IDtest
-from
-    (select ID_membre, max(cree_le) as dernier_emprunt
-    from emprunts
-    group by ID_membre)
-where dernier_emprunt > ADD_MONTHS(sysdate, 12*-3));
+CURSOR C_membre_sans_emprunt IS
+SELECT Id_membre
+FROM Membre
+WHERE Id_membre NOT IN
+(SELECT Unique(Id_membre) AS Idtest
+FROM
+    (SELECT Id_membre, Max(Cree_le) AS Dernier_emprunt
+    FROM Emprunts
+    GROUP BY Id_membre)
+WHERE Dernier_emprunt > Add_months(Sysdate, 12*-3));
 
-    v_membre_sans_emprunt c_membre_sans_emprunt%ROWTYPE;
+    V_membre_sans_emprunt C_membre_sans_emprunt%Rowtype;
 
 BEGIN
-    FOR v_membre_sans_emprunt IN c_membre_sans_emprunt LOOP
-        UPDATE EMPRUNTS SET ID_membre = NULL
-        WHERE ID_membre = v_membre_sans_emprunt.id_membre;
-        delete from membre where ID_membre = v_membre_sans_emprunt.id_membre;
+    FOR V_membre_sans_emprunt IN C_membre_sans_emprunt LOOP
+        UPDATE Emprunts SET Id_membre = NULL
+        WHERE Id_membre = V_membre_sans_emprunt.Id_membre;
+        DELETE FROM Membre WHERE Id_membre = V_membre_sans_emprunt.Id_membre;
     END LOOP;
     COMMIT;
 END;
