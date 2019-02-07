@@ -91,73 +91,79 @@ END;
 /
 -- IV - 3
 
-Set serveroutput on
+SET Serveroutput ON
 DECLARE
-    CURSOR c_order_croissant is
-        select emprunts.Id_membre, count(*)
-        from emprunts, Details
-        WHERE emprunts.Id_emprunt=Details.Id_emprunt and months_between(Sysdate, emprunts.Cree_le) <=10
-        GROUP by emprunts.Id_membre
-        ORDER by 2 ASC;
+    CURSOR C_order_croissant IS
+        SELECT Emprunts.Id_membre, Count(*)
+        FROM Emprunts, Details
+        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Months_between(Sysdate, Emprunts.Cree_le) <=10
+        GROUP BY Emprunts.Id_membre
+        ORDER BY 1 ASC;
 
-    CURSOR c_order_decroissant is
-        select emprunts.Id_membre, count(*)
-        from emprunts, Details
-        WHERE emprunts.Id_emprunt=Details.Id_emprunt and months_between(Sysdate, emprunts.Cree_le) <=10
-        GROUP by emprunts.Id_membre
-        ORDER by 2 DESC;
+    CURSOR C_order_decroissant IS
+        SELECT Emprunts.Id_membre, Count(*)
+        FROM Emprunts, Details
+        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Months_between(Sysdate, Emprunts.Cree_le) <=10
+        GROUP BY Emprunts.Id_membre
+        ORDER BY 1 DESC;
 
-    v_reception c_order_croissant%Rowtype;
-    iterator number;
+    V_reception C_order_croissant%Rowtype;
+    Iterator number;
     V_membre Membre%Rowtype;
 BEGIN
     Dbms_output.Put_line('Membres empruntant le moins:');
-    OPEN c_order_croissant;
-    for iterator in 1..3 LOOP
-        FETCH c_order_croissant into v_reception;
-        select * into V_membre
+    OPEN C_order_croissant;
+    FOR Iterator IN 1..3 LOOP
+        FETCH C_order_croissant INTO V_reception;
+        IF C_order_croissant%NOTFOUND
+        THEN Exit;
+        END IF;
+        SELECT * INTO V_membre
         FROM Membre
-        where Id_membre=v_reception.Id_membre;
-        Dbms_output.Put_line(iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.nom);
-    end loop;
-    CLOSE c_order_croissant;
+        WHERE Id_membre=V_reception.Id_membre;
+        Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.Nom);
+    END LOOP;
+    CLOSE C_order_croissant;
 
 
     Dbms_output.Put_line('Membres empruntant le plus:');
-    OPEN c_order_decroissant;
-    for iterator in 1..3 LOOP
-        FETCH c_order_decroissant into v_reception;
-        select * into V_membre
+    OPEN C_order_decroissant;
+    FOR Iterator IN 1..3 LOOP
+        FETCH C_order_decroissant INTO V_reception;
+        IF C_order_decroissant%NOTFOUND
+        THEN Exit;
+        END IF;
+        SELECT * INTO V_membre
         FROM Membre
-        where Id_membre=v_reception.Id_membre;
-        Dbms_output.Put_line(iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.nom);
-    end loop;
-    CLOSE c_order_decroissant;
+        WHERE Id_membre=V_reception.Id_membre;
+        Dbms_output.Put_line(Iterator||': Nombre d emprunts: ' ||V_membre.Id_membre||' Nom:   '||V_membre.Nom);
+    END LOOP;
+    CLOSE C_order_decroissant;
 END;
 /
 
 -- IV - 4 --
 DECLARE
     CURSOR C_ouvrages IS
-    SELECT Isbn, count(*) AS numbre_emprunts
-    from Details
-    group by Isbn
-    order by 2 DESC;
+    SELECT Isbn, Count(*) AS Numbre_emprunts
+    FROM Details
+    GROUP BY Isbn
+    ORDER BY 2 DESC;
 
-    v_ouvrage C_ouvrages%Rowtype;
-    iterator number;
+    V_ouvrage C_ouvrages%Rowtype;
+    Iterator number;
 BEGIN
     OPEN C_ouvrages;
-    for iterator in 1..5 LOOP
-        FETCH C_ouvrages into v_ouvrage;
-        Dbms_output.Put_line('Numero: ' ||iterator||' Isbn: '||v_ouvrage.isbn);
-    end loop;
+    FOR Iterator IN 1..5 LOOP
+        FETCH C_ouvrages INTO V_ouvrage;
+        Dbms_output.Put_line('Numero: ' ||Iterator||' Isbn: '||V_ouvrage.Isbn);
+    END LOOP;
     CLOSE C_ouvrages;
-end;
+END;
 /
 
 -- IV - 5 -- J ai refait la requete, plus otpimisé qu un bloc pl/sql a voir...
-SELECT numero, nom
+SELECT Numero, Nom
 FROM Membre
 WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
 
