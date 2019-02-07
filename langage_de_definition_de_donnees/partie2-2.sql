@@ -110,6 +110,7 @@ END;
 /
 
 -- II - 20
-select Libelle
-from genre;
---TODO
+select * from genre;
+select o.genre, o.titre from ouvrage o order by o.genre, o.titre;
+
+--Ca reponds à la question en vrai ! 
