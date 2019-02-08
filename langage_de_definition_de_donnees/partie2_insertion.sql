@@ -1,3 +1,5 @@
+-- Projet de gestion de base de données
+-- Fresnais Louison, Courtin François, Lallemand Tanguy, Cruard Jonathan
 -- PARTIE 2:
 
 -- QUESTION 1:

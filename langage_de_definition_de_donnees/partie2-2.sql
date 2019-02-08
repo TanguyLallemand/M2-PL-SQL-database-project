@@ -8,6 +8,7 @@
 --CF partie 2
 
 -- II - 4
+-- pas utile dans le global
 SELECT * FROM Ouvrage;
 SELECT * FROM Exemplaire;
 SELECT * FROM Membre;
@@ -19,6 +20,8 @@ SELECT * FROM Genre;
 --CF partie 1
 
 -- II - 6
+-- colonne ajoutée
+-- fonction MAJ_etat_emprunt du package Maintenance
 UPDATE Emprunts
 SET Etat_emprunt = 'RE'
 WHERE Id_emprunt NOT IN (SELECT Id_emprunt
@@ -29,8 +32,8 @@ WHERE Date_retour IS NULL);
 --CF partie 4 question 6
 
 -- II - 8
-
-DELETE FROM Exemplaire WHERE Etat='MA';
+-- mis dans un TRIGGER
+DELETE FROM Exemplaire WHERE Etat='Mauvais';
 
 -- II - 9
 SELECT Titre FROM Ouvrage;

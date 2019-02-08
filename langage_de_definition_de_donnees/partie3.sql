@@ -1,5 +1,5 @@
 -- III - 1 Nombre d’emprunts par ouvrage et par exemplaire
--- III - 1
+-- pas utilisable car on a un truc mieux après
 SELECT Isbn,
 Decode(Grouping(Numero_exemplaire),1,'Total',Numero_exemplaire) AS Numero_exemplaire,
 Count(*) AS Nombre
