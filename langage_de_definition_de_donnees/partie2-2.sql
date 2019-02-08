@@ -32,7 +32,7 @@ WHERE Date_retour IS NULL);
 --CF partie 4 question 6
 
 -- II - 8
--- mis dans un TRIGGER
+-- mis dans le TRIGGER supprimer_exemplaire_en_mauvais_etat
 DELETE FROM Exemplaire WHERE Etat='Mauvais';
 
 -- II - 9
