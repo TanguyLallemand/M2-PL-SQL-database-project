@@ -35,21 +35,25 @@ WHERE Date_retour IS NULL);
 -- mis dans le TRIGGER supprimer_exemplaire_en_mauvais_etat
 DELETE FROM Exemplaire WHERE Etat='Mauvais';
 
--- II - 9
+-- II - 9 function infos.lister_ouvrages TODO creer une vue serait pas mieux?
 SELECT Titre FROM Ouvrage;
 
--- II - 10
-SELECT Isbn, Id_membre
-FROM Details JOIN (SELECT Id_membre, Id_emprunt FROM Emprunts
-WHERE Etat_emprunt = 'EC' AND Cree_le < Sysdate-14) Test
-ON Details.Id_emprunt = Test.Id_emprunt;
+-- II - 10 view créé
+select nom, prenom, titre, ouvrage.isbn, numero_exemplaire
+from (Select ID_emprunt, isbn, numero_exemplaire
+    from details
+    where date_retour is not null) livre_non_rendus,
+    ouvrage,
+    membre,
+    emprunts
+where ouvrage.isbn = livre_non_rendus.isbn and emprunts.ID_membre = membre.ID_membre and emprunts.ID_emprunt = livre_non_rendus.ID_emprunt
 
 -- II - 11
 SELECT Genre, Count(*) AS Nbr_ouvrage
 FROM Ouvrage
 GROUP BY Genre;
 
--- II - 12
+-- II - 12 views.sql
 SELECT Nom, Prenom, M.Id_membre, Sum(Date_retour-Cree_le)/Count(*) AS Temps_moyen_emprunt
 FROM Emprunts C, Details T, Membre M
 WHERE C.Id_emprunt = T.Id_emprunt AND M.Id_membre = C.Id_membre
@@ -69,26 +73,26 @@ WHERE Round(Months_between(Sysdate,Details.Date_retour))<='12' AND Ouvrage.Isbn 
 GROUP BY Details.Isbn, Ouvrage.Titre
 HAVING Count(*) > 10;
 
--- II - 15
+-- II - 15 views.sql
 SELECT O.Isbn, E.Numero_exemplaire
 FROM Ouvrage O, Exemplaire E
 WHERE O.Isbn = E.Isbn
 ORDER BY O.Isbn;
 
--- II - 16
+-- II - 16 views.sql
 CREATE OR REPLACE VIEW Nbr_ouvrage AS
 SELECT E.Id_membre, Count(E.Id_emprunt) AS Nbr_emprunt
 FROM Emprunts E, Details D
 WHERE E.Id_emprunt = D.Id_emprunt AND D.Date_retour IS NULL
 GROUP BY E.Id_membre;
 
--- II - 17
+-- II - 17 views.sql
 CREATE OR REPLACE VIEW Nbr_emprunt AS
 SELECT Isbn, Count(*) AS Nbr_emprunt_en_cours
 FROM Details
 GROUP BY Isbn;
 
--- II - 18
+-- II - 18 views.sql
 SELECT *
 FROM Membre
 ORDER BY Nom, Prenom ASC;
@@ -123,6 +127,6 @@ FOR Ligne IN C_emprunts_ouvrage
 END;
 /
 
--- II - 20
+-- II - 20 views.sql
 SELECT * FROM Genre;
 SELECT O.Genre, O.Titre FROM Ouvrage O ORDER BY O.Genre, O.Titre;
