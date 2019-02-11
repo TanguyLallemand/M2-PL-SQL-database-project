@@ -22,6 +22,7 @@ SELECT * FROM Genre;
 -- II - 6
 -- colonne ajoutée
 -- fonction MAJ_etat_emprunt du package Maintenance
+-- TODO voir pour ajouter un trigger
 UPDATE Emprunts
 SET Etat_emprunt = 'RE'
 WHERE Id_emprunt NOT IN (SELECT Id_emprunt
@@ -36,6 +37,7 @@ WHERE Date_retour IS NULL);
 DELETE FROM Exemplaire WHERE Etat='Mauvais';
 
 -- II - 9 function infos.lister_ouvrages TODO creer une vue serait pas mieux?
+-- view faite a voir ce qu'on choisi
 SELECT Titre FROM Ouvrage;
 
 -- II - 10 view créé
@@ -48,7 +50,7 @@ from (Select ID_emprunt, isbn, numero_exemplaire
     emprunts
 where ouvrage.isbn = livre_non_rendus.isbn and emprunts.ID_membre = membre.ID_membre and emprunts.ID_emprunt = livre_non_rendus.ID_emprunt
 
--- II - 11
+-- II - 11 views.sql
 SELECT Genre, Count(*) AS Nbr_ouvrage
 FROM Ouvrage
 GROUP BY Genre;
@@ -60,13 +62,13 @@ WHERE C.Id_emprunt = T.Id_emprunt AND M.Id_membre = C.Id_membre
 GROUP BY M.Id_membre, M.Nom, M.Prenom
 ORDER BY Id_membre;
 
--- II - 13
+-- II - 13 views.sql
 SELECT Genre, Sum(Date_retour-Cree_le)/Count(*)
 FROM Emprunts, Details, Ouvrage
 WHERE Emprunts.Id_emprunt = Details.Id_emprunt AND Ouvrage.Isbn = Details.Isbn
 GROUP BY Ouvrage.Genre;
 
--- II - 14
+-- II - 14 view.sql ouvrage_les_plus_populaire
 SELECT Details.Isbn, Ouvrage.Titre, Count(*) Nombre_emprunts
 FROM Details, Ouvrage
 WHERE Round(Months_between(Sysdate,Details.Date_retour))<='12' AND Ouvrage.Isbn = Details.Isbn
@@ -88,7 +90,7 @@ GROUP BY E.Id_membre;
 
 -- II - 17 views.sql
 CREATE OR REPLACE VIEW Nbr_emprunt AS
-SELECT Isbn, Count(*) AS Nbr_emprunt_en_cours
+SELECT Isbn, Count(*) AS Nbr_emprunts
 FROM Details
 GROUP BY Isbn;
 
@@ -97,7 +99,7 @@ SELECT *
 FROM Membre
 ORDER BY Nom, Prenom ASC;
 
--- II - 19
+-- II - 19 TODO louison voit ça je sais pas a quoi ça sert et tout
 
 CREATE GLOBAL TEMPORARY TABLE Emprunts_titre(
 Isbn Char(13),

@@ -25,6 +25,7 @@ CREATE TABLE Ouvrage
 	Editeur Varchar2(40), -- can be null because data are not always known
 	CONSTRAINT Pk_ouvrage PRIMARY KEY (Isbn)
 );
+COMMENT ON TABLE Ouvrage IS 'Descriptifs des ouvrages référencés par la bibliothèque';
 
 -- Table référençant les différents exemplaires de chaque ouvrage
 CREATE TABLE Exemplaire
@@ -36,6 +37,7 @@ CREATE TABLE Exemplaire
 	CONSTRAINT Isbn_ouvrage FOREIGN Key(Isbn) REFERENCES Ouvrage (Isbn),
 	CONSTRAINT Pk_exemplaire PRIMARY KEY (Numero_exemplaire,Isbn)
 );
+COMMENT ON TABLE Exemplaire IS 'Définition précise des livres présents dans la bibliothèque';
 
 -- Table stockant les informations sur les membres ou "Abonnes" de la bibliothèque
 CREATE TABLE Membre
@@ -52,6 +54,7 @@ CREATE TABLE Membre
 	CONSTRAINT Commence_comme_un_telephone CHECK (REGEXP_LIKE(Telephone, '^((01)|(02)|(03)|(04)|(05)|(06)|(07))(\d){8}?$')),
 	CONSTRAINT Pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
+COMMENT ON TABLE Membre IS 'Descriptifs des membres. Possède le synonymes Abonnes';
 -- permet de restaurer la table
 ALTER TABLE Membre ENABLE ROW Movement;
 
@@ -65,6 +68,7 @@ CREATE TABLE Emprunts
 	CONSTRAINT Id_membre_membre FOREIGN Key(Id_membre) REFERENCES Membre (Id_membre),
 	CONSTRAINT Pk_emprunt PRIMARY KEY (Id_emprunt)
 );
+COMMENT ON TABLE Emprunts IS 'Fiche d’emprunt de livres, toujours associée à un et un seul membre';
 
 -- stocke les détails des emprunts quels livres ont été empruntés et quand ils ont été rendus
 CREATE TABLE Details
@@ -76,6 +80,7 @@ CREATE TABLE Details
     Date_retour DATE DEFAULT NULL,
 	CONSTRAINT Id_emprunt_emprunt FOREIGN Key(Id_emprunt) REFERENCES Emprunts(Id_emprunt) ON DELETE CASCADE
 );
+COMMENT ON TABLE Details IS 'Chaque ligne correspond à un livre emprunté';
 -- permet de restaurer la table
 ALTER TABLE Details ENABLE ROW Movement;
 
@@ -85,16 +90,4 @@ CREATE TABLE Genre
 	Code Varchar2(3) NOT NULL,
 	Libelle Varchar2(40) NOT NULL
 );
-
-
-
-
--- efface automatiquement les exemplaire en mauvais état
-CREATE OR REPLACE TRIGGER supprimer_exemplaire_en_mauvais_etat AFTER UPDATE ON EXEMPLAIRE
-FOR EACH ROW
-WHEN (new.Etat = 'Mauvais')
-
-BEGIN
-  DELETE FROM Exemplaire WHERE isbn = :new.isbn and Numero_exemplaire = :new.Numero_exemplaire;
-END;
-/
+COMMENT ON TABLE Genre IS 'Descriptifs des genres possibles des ouvrages';
