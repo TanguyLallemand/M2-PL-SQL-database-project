@@ -1,4 +1,7 @@
+--------------------------------------------------------------------------------
 -- Add functions and procedure signatures
+--------------------------------------------------------------------------------
+
 CREATE OR REPLACE PACKAGE Maintenance AS
     PROCEDURE Maj_etat_emprunt;
 
@@ -9,7 +12,10 @@ END Maintenance;
 
 CREATE OR REPLACE PACKAGE BODY Maintenance AS
 
+--------------------------------------------------------------------------------
 -- passe l'etat de l'emprunt à RE si tout les livres correspondants sont rendus
+--------------------------------------------------------------------------------
+
 PROCEDURE Maj_etat_emprunt AS
 BEGIN
     UPDATE Emprunts
@@ -20,7 +26,10 @@ BEGIN
     COMMIT;
 END;
 
+--------------------------------------------------------------------------------
 -- supprime les membres dont l’adhésion a expiré depuis plus de 2 ans et dont les emprunts sont soldés
+--------------------------------------------------------------------------------
+
 PROCEDURE Purge_membre AS
     -- curseur avec la liste des membres expirés
     CURSOR C_membre_expi
