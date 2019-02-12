@@ -1,6 +1,13 @@
 -- Projet de gestion de base de données
 -- Fresnais Louison, Courtin François, Lallemand Tanguy, Cruard Jonathan
 
+--Augmente le buffer afin de permettre les dbms_output
+SET Serveroutput ON SIZE 30000;
+
+--------------------------------------------------------------------------------
+-- Création de séquences
+--------------------------------------------------------------------------------
+
 -- sequence utilisé pour donner un ID unique à chaque membre lors de l'inscription
 CREATE SEQUENCE Uniq_id_membre
 MINVALUE 0
@@ -14,6 +21,10 @@ MINVALUE 0
 START WITH 0
 INCREMENT BY 1
 CACHE 100;
+
+--------------------------------------------------------------------------------
+-- Création des tables
+--------------------------------------------------------------------------------
 
 -- Table référençant l'ensemble des ouvrage de la bibliothèque
 CREATE TABLE Ouvrage
@@ -33,7 +44,7 @@ CREATE TABLE Exemplaire
 	Isbn Varchar2(13) NOT NULL,
 	Numero_exemplaire Number(2) NOT NULL,
 	Etat Varchar2(8) DEFAULT 'Neuf'
-	CONSTRAINT constraint_check_etat Check( Etat IN('Mauvais', 'Douteux', 'Moyen', 'Bon', 'Neuf')),
+	CONSTRAINT Constraint_check_etat Check( Etat IN('Mauvais', 'Douteux', 'Moyen', 'Bon', 'Neuf')),
 	CONSTRAINT Isbn_ouvrage FOREIGN Key(Isbn) REFERENCES Ouvrage (Isbn),
 	CONSTRAINT Pk_exemplaire PRIMARY KEY (Numero_exemplaire,Isbn)
 );
@@ -51,7 +62,7 @@ CREATE TABLE Membre
 	Duree Number(2) Check(Duree IN(1, 3, 6, 12)) NOT NULL,
 	CONSTRAINT Pk_membre PRIMARY KEY (Id_membre),
 	CONSTRAINT Tel_unique UNIQUE (Telephone),
-	CONSTRAINT Commence_comme_un_telephone CHECK (REGEXP_LIKE(Telephone, '^((01)|(02)|(03)|(04)|(05)|(06)|(07))(\d){8}?$')),
+	CONSTRAINT Commence_comme_un_telephone CHECK (Regexp_like(Telephone, '^((01)|(02)|(03)|(04)|(05)|(06)|(07))(\d){8}?$')),
 	CONSTRAINT Pas_de_doublon UNIQUE (Nom,Prenom,Telephone)
 );
 COMMENT ON TABLE Membre IS 'Descriptifs des membres. Possède le synonymes Abonnes';
