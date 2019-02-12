@@ -1,16 +1,36 @@
+
+--------------------------------------------------------------------------------
+-- tous les titres qui contiennent le mot « mer » quelque soit sa place dans le
+-- titre et la casse avec laquelle il est renseigné.
+--------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW Affiche_livres_avec_mer
+AS SELECT Titre
+FROM Ouvrage
+WHERE Titre LIKE '%mer%';
+
+--------------------------------------------------------------------------------
+-- une requête qui permet de connaître tous les auteurs dont le nom possède la
+-- particule « de »
+--------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW Affiche_livres_avec_de
+AS SELECT Auteur
+FROM Ouvrage
+WHERE Auteur LIKE '% de %';
+
+
 --------------------------------------------------------------------------------
 -- affiche les membres qui ont emprunté un ouvrage depuis 2 semaine et le titre
 --------------------------------------------------------------------------------
 
-CREATE OR replace VIEW ouvrage_emprunte_depuis_2_sem
-AS select nom, prenom, titre, ouvrage.isbn, numero_exemplaire
-from (Select ID_emprunt, isbn, numero_exemplaire
-    from details
-    where date_retour is null) livre_non_rendus,
-    ouvrage,
-    membre,
-    emprunts
-where ouvrage.isbn = livre_non_rendus.isbn and emprunts.ID_membre = membre.ID_membre and emprunts.ID_emprunt = livre_non_rendus.ID_emprunt;
+CREATE OR REPLACE VIEW Ouvrage_emprunte_depuis_2_sem
+AS SELECT Nom, Prenom, Titre, Ouvrage.Isbn, Numero_exemplaire
+FROM (SELECT Id_emprunt, Isbn, Numero_exemplaire
+    FROM Details
+    WHERE Date_retour IS NULL) Livre_non_rendus,
+    Ouvrage,
+    Membre,
+    Emprunts
+WHERE Ouvrage.Isbn = Livre_non_rendus.Isbn AND Emprunts.Id_membre = Membre.Id_membre AND Emprunts.Id_emprunt = Livre_non_rendus.Id_emprunt;
 
 --------------------------------------------------------------------------------
 -- affiche la liste des membres et le nombres de livres qu'ils ont actuellement empruntés
@@ -44,7 +64,7 @@ GROUP BY Isbn;
 -- liste les ouvrages et les numeros d'exemplaires disponibles
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW lister_ouvrages_et_exemplaires AS
+CREATE OR REPLACE VIEW Lister_ouvrages_et_exemplaires AS
 SELECT O.Isbn, E.Numero_exemplaire
 FROM Ouvrage O, Exemplaire E
 WHERE O.Isbn = E.Isbn
@@ -54,7 +74,7 @@ ORDER BY O.Isbn;
 -- affiche les membres en les triants par ordre alphabétique
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW membre_ordre_alpha AS
+CREATE OR REPLACE VIEW Membre_ordre_alpha AS
 SELECT *
 FROM Membre
 ORDER BY Nom, Prenom ASC;
@@ -63,7 +83,7 @@ ORDER BY Nom, Prenom ASC;
 -- liste les ouvrage par genre
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW ouvrages_par_genre AS
+CREATE OR REPLACE VIEW Ouvrages_par_genre AS
 SELECT O.Genre, O.Titre
 FROM Ouvrage O
 ORDER BY O.Genre, O.Titre;
@@ -84,7 +104,7 @@ ORDER BY Id_membre;
 --------------------------------------------------------------------------------
 
 CREATE OR REPLACE VIEW Temps_moyen_emprunt_genre AS
-SELECT Genre, Sum(Date_retour-Cree_le) / Count(*) AS temp_moyen_emprunts_genre
+SELECT Genre, Sum(Date_retour-Cree_le) / Count(*) AS Temp_moyen_emprunts_genre
 FROM Emprunts, Details, Ouvrage
 WHERE Emprunts.Id_emprunt = Details.Id_emprunt AND Ouvrage.Isbn = Details.Isbn
 GROUP BY Ouvrage.Genre;
@@ -93,14 +113,14 @@ GROUP BY Ouvrage.Genre;
 -- affiche la liste des titres d'ouvrage
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW liste_des_ouvrages AS
+CREATE OR REPLACE VIEW Liste_des_ouvrages AS
 SELECT Titre FROM Ouvrage;
 
 --------------------------------------------------------------------------------
 -- affiche les ouvrages empruntés plus de 10 fois sur les 12 derniers mois
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW ouvrage_plus_populaire_12mois AS
+CREATE OR REPLACE VIEW Ouvrage_plus_populaire_12mois AS
 SELECT Details.Isbn, Ouvrage.Titre, Count(*) Nombre_emprunts
 FROM Details, Ouvrage
 WHERE Round(Months_between(Sysdate,Details.Date_retour))<='12' AND Ouvrage.Isbn = Details.Isbn
@@ -112,8 +132,8 @@ ORDER BY Nombre_emprunts;
 -- affiche la liste des ouvrages qui n'ont pas étés empruntés depuis 3 mois
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW ouvrage_moins_populaire_3mois AS
-SELECT Isbn, Numero_exemplaire, Max(Date_retour) AS max_date_retour
+CREATE OR REPLACE VIEW Ouvrage_moins_populaire_3mois AS
+SELECT Isbn, Numero_exemplaire, Max(Date_retour) AS Max_date_retour
 FROM Details
 WHERE Add_months(Sysdate, -3) > Date_retour
 GROUP BY ROLLUP (Isbn, Numero_exemplaire);
@@ -122,18 +142,18 @@ GROUP BY ROLLUP (Isbn, Numero_exemplaire);
 -- affiche les ouvrages dont aucun exemplaire neuf n'est disponible
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW ouvrage_sans_neuf AS
-select *
-from ouvrage
-where ISBN not in (SELECT Isbn
+CREATE OR REPLACE VIEW Ouvrage_sans_neuf AS
+SELECT *
+FROM Ouvrage
+WHERE Isbn NOT IN (SELECT Isbn
                 FROM Exemplaire
-                where Etat='Neuf');
+                WHERE Etat='Neuf');
 
 --------------------------------------------------------------------------------
 -- affiche le public visé par chaque ouvrage
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW ouvrage_avec_public AS
+CREATE OR REPLACE VIEW Ouvrage_avec_public AS
 SELECT Titre, Auteur, Genre,
     CASE
         WHEN Genre='BD' THEN 'Jeunesse'
@@ -148,14 +168,14 @@ FROM Ouvrage;
 -- affiche chaque ouvrage avec un message dépendant du nombre d'exemplaires disponibles
 --------------------------------------------------------------------------------
 
-CREATE OR REPLACE VIEW abondance_ouvrages AS
+CREATE OR REPLACE VIEW Abondance_ouvrages AS
 SELECT Titre, Auteur,
     CASE
         WHEN Compte=0 THEN 'Aucun'
         WHEN Compte<2 THEN 'Peu'
         WHEN Compte<5 THEN 'Normal'
         ELSE 'Beaucoup'
-    END AS disponibilite
+    END AS Disponibilite
 FROM Ouvrage O JOIN (SELECT Isbn, Count(*) AS Compte
                     FROM Exemplaire
                     GROUP BY Isbn) Sel
