@@ -87,6 +87,7 @@ END;
 -------------------------------------------------------------------------------
 -- Purgemembres, permet de supprimer tous les membres dont
 -- l’adhésion n’a pas été renouvelée depuis trois ans.
+-- TODO ça doit pas marcher ton truc normalement car il y a la contrainte de forein key dans les autres tables (cf part IV Q2)
 -------------------------------------------------------------------------------
 
 PROCEDURE Purgemembres AS

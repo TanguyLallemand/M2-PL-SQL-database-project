@@ -101,3 +101,17 @@ SELECT Titre, Auteur, Genre,
         ELSE 'public inconnu'
     END AS Type_de_public
 FROM Ouvrage;
+
+-- affiche chaque ouvrage avec un message dépendant du nombre d'exemplaires disponibles
+CREATE OR REPLACE VIEW abondance_ouvrages AS
+SELECT Titre, Auteur,
+    CASE
+        WHEN Compte=0 THEN 'Aucun'
+        WHEN Compte<2 THEN 'Peu'
+        WHEN Compte<5 THEN 'Normal'
+        ELSE 'Beaucoup'
+    END AS disponibilite
+FROM Ouvrage O JOIN (SELECT Isbn, Count(*) AS Compte
+                    FROM Exemplaire
+                    GROUP BY Isbn) Sel
+ON O.Isbn = Sel.Isbn;
