@@ -17,7 +17,10 @@ BEGIN
         Dbms_output.Put_line(V_liste_titres.Titre);
     END LOOP;
 END;
-
+-- Call this procedure giving him a regex. For example, to use it for question 3-5 please add this package and then call like following line:
+-- begin
+-- recherche_pattern('%de%');
+-- end;
 PROCEDURE recherche_pattern (pattern_recherche IN VARCHAR2) AS
 CURSOR C_liste_titres IS
     SELECT Titre
