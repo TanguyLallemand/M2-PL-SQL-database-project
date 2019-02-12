@@ -11,7 +11,7 @@ CREATE PACKAGE Livre AS
         RETURN number;
     FUNCTION Empruntmoyen (V_idmembre IN number)
         RETURN number;
-    FUNCTION Dureemoyenne (V_num_isbn IN VARCHAR2, V_num_exemplaire IN NUMBER DEFAULT NULL)
+    FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
     RETURN number;
     PROCEDURE Majeetatexemplaire;
     FUNCTION Ajoutemembre (V_nom IN Varchar2,
@@ -190,20 +190,20 @@ END;
 -- le numéro de l’exemplaire
 -------------------------------------------------------------------------------
 
-FUNCTION Dureemoyenne (V_num_isbn IN VARCHAR2, V_num_exemplaire IN NUMBER DEFAULT NULL)
+FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
 RETURN number AS
-    V_duree NUMBER;
+    v_duree NUMBER;
 BEGIN
-    IF (V_num_exemplaire IS NULL) THEN
-        SELECT Avg(Trunc(Date_retour,'DD')-Trunc(Cree_le,'DD')+1) INTO V_duree
+    IF (v_Num_exemplaire IS null) THEN
+        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
         FROM Emprunts,Details
-        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Details.Isbn=V_num_isbn AND Date_retour IS NOT NULL;
+        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn and Date_retour is not null;
     ELSE
-        SELECT Avg(Trunc(Date_retour,'DD')-Trunc(Cree_le,'DD')+1) INTO V_duree
+        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
         FROM Emprunts,Details
-        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Details.Isbn=V_num_isbn AND Details.Numero_exemplaire=V_num_exemplaire AND Date_retour IS NOT NULL;
+        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn AND Details.Numero_exemplaire=v_Num_exemplaire and Date_retour is not null;
     END IF;
-    RETURN V_duree;
+    RETURN v_duree;
 END;
 
 
@@ -243,4 +243,106 @@ BEGIN
 END;
 
 END Livre;
+/
+
+FUNCTION AnalyseActivite_emprunt (
+  v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL)
+  RETURN NUMBER
+  IS
+  v_nb_emprunts NUMBER := 0;
+
+  BEGIN
+
+    IF (v_util IS NOT NULL AND v_date IS NULL) THEN
+      SELECT count(*) INTO v_nb_emprunts
+      FROM Emprunts
+      WHERE Cree_par = v_util;
+
+      RETURN v_nb_emprunts;
+    END IF;
+
+    IF (v_util IS NULL AND v_date IS NOT NULL) THEN
+      SELECT count(*) INTO v_nb_emprunts
+      FROM Emprunts
+      WHERE to_date(Cree_le, 'DD-MON-YY') = to_date(v_date, 'DD-MON-YY');
+      dbms_output.put_line(v_date);
+      RETURN v_nb_emprunts;
+    END IF;
+
+    IF (v_util IS NOT NULL AND v_date IS NOT NULL) THEN
+      SELECT count(*) INTO v_nb_emprunts
+      FROM Emprunts
+      WHERE Cree_par = v_util
+      AND to_date(Cree_le, 'DD-MON-YY') = to_date(v_date, 'DD-MON-YY');
+
+      RETURN v_nb_emprunts;
+    END IF;
+  END;
+/
+
+FUNCTION AnalyseActivite_detail (
+  v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL)
+  RETURN NUMBER
+  IS
+  v_nb_retour NUMBER := 0;
+
+  BEGIN
+    IF (v_util IS NULL AND v_date IS NOT NULL) THEN
+
+      SELECT count(*) INTO v_nb_retour
+      FROM Details
+      WHERE to_date(Date_retour, 'DD-MON-YY') = to_date(v_date, 'DD-MON-YY');
+
+      RETURN v_nb_retour;
+    END IF;
+
+    IF (v_util IS NOT NULL AND v_date IS NULL) THEN
+
+      SELECT count(*) INTO v_nb_retour
+      FROM Details
+      WHERE Termine_par = v_util;
+
+      RETURN v_nb_retour;
+    END IF;
+
+    IF (v_util IS NOT NULL AND v_date IS NOT NULL) THEN
+
+      SELECT count(*) INTO v_nb_retour
+      FROM Details
+      WHERE Termine_par = v_util
+      AND to_date(Date_retour, 'DD-MON-YY') = to_date(v_date, 'DD-MON-YY');
+
+      RETURN v_nb_retour;
+    END IF;
+  END;
+/
+
+FUNCTION AnalyseActivite (
+  v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL)
+  RETURN NUMBER
+  IS
+    v_nb_emprunts NUMBER := 0;
+    v_nb_retour NUMBER := 0;
+  BEGIN
+    IF (v_util IS NOT NULL AND v_date IS NOT NULL) THEN
+      v_nb_emprunts := AnalyseActivite_emprunt(v_util, v_date);
+      v_nb_retour := AnalyseActivite_detail(v_util, v_date);
+
+      RETURN v_nb_emprunts + v_nb_retour;
+    END IF;
+
+    IF (v_util IS NOT NULL AND v_date IS NULL) THEN
+      v_nb_emprunts := AnalyseActivite_emprunt(v_util);
+      v_nb_retour := AnalyseActivite_detail(v_util);
+
+      RETURN v_nb_emprunts + v_nb_retour;
+    END IF;
+
+    IF (v_util IS NULL AND v_date IS NOT NULL) THEN
+      v_nb_emprunts := AnalyseActivite_emprunt(v_date);
+      v_nb_retour := AnalyseActivite_detail(v_date);
+
+      RETURN v_nb_emprunts + v_nb_retour;
+    END IF;
+  END;
 /

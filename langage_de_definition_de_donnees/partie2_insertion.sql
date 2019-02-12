@@ -120,3 +120,18 @@ INSERT INTO Details VALUES (18,1,'2070367177',1,Sysdate-14);
 INSERT INTO Details VALUES (19,1,'2746026090',1,Sysdate-12);
 INSERT INTO Details VALUES (20,1,'2266091611',1,DEFAULT);
 INSERT INTO Details VALUES (20,2,'2253010219',1,DEFAULT);
+
+--------------------------------------------------------------------------------
+-- Altération des tables
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- Altération des tables nécessaire au bon fonctionnement des triggers.
+--------------------------------------------------------------------------------
+
+ALTER TABLE Emprunts
+ADD (Cree_par VARCHAR2(20) DEFAULT user);
+
+ALTER TABLE Details
+ADD (Termine_par VARCHAR2(20) DEFAULT user);
