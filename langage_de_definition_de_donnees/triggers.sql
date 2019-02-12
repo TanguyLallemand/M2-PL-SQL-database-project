@@ -1,8 +1,8 @@
 --------------------------------------------------------------------------------
--- Création de triggers
+-- Création des triggers
 --------------------------------------------------------------------------------
 
--- efface automatiquement les exemplaire en mauvais état
+-- efface automatiquement les exemplaires en mauvais état
 
 CREATE OR REPLACE TRIGGER supprimer_exemplr_mauvais AFTER UPDATE ON EXEMPLAIRE
 FOR EACH ROW
@@ -30,10 +30,10 @@ END;
 /
 
 
--- Partie VI Q3
+-- Partie VI Q3 TODO a tester
 CREATE OR REPLACE TRIGGER modif_mb_emprunt BEFORE UPDATE ON Emprunts
 FOR EACH ROW
-WHEN (new.Id_membre != old.Id_membre)
+WHEN ((new.Id_membre != old.Id_membre) and (new.Id_membre != NULL))
 
 BEGIN
   RAISE_APPLICATION_ERROR(-20002, 'Impossible de modifier le membre d''un emprunt');
