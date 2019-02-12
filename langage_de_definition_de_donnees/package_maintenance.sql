@@ -1,8 +1,8 @@
 -- Add functions and procedure signatures
 CREATE OR REPLACE PACKAGE Maintenance AS
-    PROCEDURE MAJ_etat_emprunt;
+    PROCEDURE Maj_etat_emprunt;
 
-    PROCEDURE purge_membre;
+    PROCEDURE Purge_membre;
 
 END Maintenance;
 /
@@ -10,7 +10,7 @@ END Maintenance;
 CREATE OR REPLACE PACKAGE BODY Maintenance AS
 
 -- passe l'etat de l'emprunt à RE si tout les livres correspondants sont rendus
-PROCEDURE MAJ_etat_emprunt AS
+PROCEDURE Maj_etat_emprunt AS
 BEGIN
     UPDATE Emprunts
     SET Etat_emprunt = 'RE'
@@ -21,7 +21,7 @@ BEGIN
 END;
 
 -- supprime les membres dont l’adhésion a expiré depuis plus de 2 ans et dont les emprunts sont soldés
-PROCEDURE purge_membre AS
+PROCEDURE Purge_membre AS
     -- curseur avec la liste des membres expirés
     CURSOR C_membre_expi
         IS SELECT *
@@ -32,18 +32,18 @@ PROCEDURE purge_membre AS
 
     -- curseur pour les emprunts des membres expirés
     CURSOR C_emprunts_en_cours(V_id_membre Emprunts.Id_membre%TYPE := NULL)
-        IS SELECT count(*) as coun
+        IS SELECT Count(*) AS Coun
         FROM Emprunts
-        WHERE Id_membre = V_id_membre and etat_emprunt = 'EC';
+        WHERE Id_membre = V_id_membre AND Etat_emprunt = 'EC';
     -- variable temp pour les emprunts de la liste
     V_emprunts_en_cours C_emprunts_en_cours%Rowtype;
 BEGIN
     FOR V_membre_expi IN C_membre_expi LOOP
         OPEN C_emprunts_en_cours(V_membre_expi.Id_membre);
         FETCH C_emprunts_en_cours INTO V_emprunts_en_cours;
-        IF V_emprunts_en_cours.coun = 0 THEN
+        IF V_emprunts_en_cours.Coun = 0 THEN
             UPDATE Emprunts SET Id_membre = NULL
-            WHERE Emprunts.ID_membre = V_membre_expi.ID_membre;
+            WHERE Emprunts.Id_membre = V_membre_expi.Id_membre;
             DELETE FROM Membre WHERE CURRENT OF C_membre_expi;
         END IF;
         CLOSE C_emprunts_en_cours;

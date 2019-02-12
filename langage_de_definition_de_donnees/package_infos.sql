@@ -1,5 +1,5 @@
 CREATE PACKAGE Infos AS
-    PROCEDURE lister_ouvrages;
+    PROCEDURE Lister_ouvrages;
 
 
 END Infos;
@@ -7,14 +7,14 @@ END Infos;
 
 CREATE OR REPLACE PACKAGE BODY Infos AS
 
-PROCEDURE lister_ouvrages AS
-CURSOR c_liste_titres IS
+PROCEDURE Lister_ouvrages AS
+CURSOR C_liste_titres IS
     SELECT Titre FROM Ouvrage;
-v_liste_titres c_liste_titres%ROWTYPE;
+V_liste_titres C_liste_titres%Rowtype;
 BEGIN
     Dbms_output.Put_line('Liste des ouvrages disponibles :');
-    FOR v_liste_titres IN c_liste_titres LOOP
-        Dbms_output.Put_line(v_liste_titres.Titre);
+    FOR V_liste_titres IN C_liste_titres LOOP
+        Dbms_output.Put_line(V_liste_titres.Titre);
     END LOOP;
 END;
 

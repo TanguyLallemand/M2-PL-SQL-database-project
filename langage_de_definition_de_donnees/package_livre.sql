@@ -11,7 +11,7 @@ CREATE PACKAGE Livre AS
         RETURN number;
     FUNCTION Empruntmoyen (V_idmembre IN number)
         RETURN number;
-    FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
+    FUNCTION Dureemoyenne (V_num_isbn IN VARCHAR2, V_num_exemplaire IN NUMBER DEFAULT NULL)
     RETURN number;
     PROCEDURE Majeetatexemplaire;
     FUNCTION Ajoutemembre (V_nom IN Varchar2,
@@ -190,20 +190,20 @@ END;
 -- le numéro de l’exemplaire
 -------------------------------------------------------------------------------
 
-FUNCTION Dureemoyenne (v_Num_isbn IN VARCHAR2, v_Num_exemplaire IN NUMBER default null)
+FUNCTION Dureemoyenne (V_num_isbn IN VARCHAR2, V_num_exemplaire IN NUMBER DEFAULT NULL)
 RETURN number AS
-    v_duree NUMBER;
+    V_duree NUMBER;
 BEGIN
-    IF (v_Num_exemplaire IS null) THEN
-        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
+    IF (V_num_exemplaire IS NULL) THEN
+        SELECT Avg(Trunc(Date_retour,'DD')-Trunc(Cree_le,'DD')+1) INTO V_duree
         FROM Emprunts,Details
-        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn and Date_retour is not null;
+        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Details.Isbn=V_num_isbn AND Date_retour IS NOT NULL;
     ELSE
-        SELECT AVG(TRUNC(Date_retour,'DD')-TRUNC(Cree_le,'DD')+1) INTO v_duree
+        SELECT Avg(Trunc(Date_retour,'DD')-Trunc(Cree_le,'DD')+1) INTO V_duree
         FROM Emprunts,Details
-        WHERE emprunts.Id_emprunt=details.Id_emprunt AND details.ISBN=v_Num_isbn AND Details.Numero_exemplaire=v_Num_exemplaire and Date_retour is not null;
+        WHERE Emprunts.Id_emprunt=Details.Id_emprunt AND Details.Isbn=V_num_isbn AND Details.Numero_exemplaire=V_num_exemplaire AND Date_retour IS NOT NULL;
     END IF;
-    RETURN v_duree;
+    RETURN V_duree;
 END;
 
 
