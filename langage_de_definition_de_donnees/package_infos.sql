@@ -28,7 +28,7 @@ CURSOR C_liste_titres IS
     WHERE Titre LIKE pattern_recherche;
 V_liste_titres C_liste_titres%Rowtype;
   BEGIN
-    Dbms_output.Put_line('Liste des ouvrages disponibles :');
+    Dbms_output.Put_line('Liste des ouvrages trouvés avec votre regexp ' || pattern_recherche || ' :');
     FOR V_liste_titres IN C_liste_titres LOOP
         Dbms_output.Put_line(V_liste_titres.Titre);
     END LOOP;
