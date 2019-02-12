@@ -63,7 +63,7 @@ COMMENT ON TABLE Details IS 'Chaque ligne correspond à un livre emprunté';
 SELECT *
 FROM User_tab_comments;
 
--- III - 9 -- Fais dans le script de création de la table membre TODO c'est vrai ça? 
+-- III - 9 -- Fais dans le script de création de la table membre TODO c'est vrai ça?
 
 -- III - 10 TODO useless?
 -- Suppression de la table des détails
@@ -72,7 +72,8 @@ DROP TABLE Details CASCADE CONSTRAINTS;
 -- III - 11 TODO useless?
 -- Annulez cette suppression de table
 Flashback TABLE Details TO BEFORE DROP;
--- III - 13
+
+-- III - 13 views.sql
 SELECT Titre, Auteur,
     CASE
         WHEN Compte=0 THEN 'Aucun'

@@ -1,8 +1,8 @@
 -- Add functions and procedure signatures
-CREATE PACKAGE Maintenance AS
+CREATE OR REPLACE PACKAGE Maintenance AS
     PROCEDURE MAJ_etat_emprunt;
 
-    FUNCTION purge_membre;
+    PROCEDURE purge_membre;
 
 END Maintenance;
 /
@@ -22,7 +22,6 @@ END;
 
 -- supprime les membres dont l’adhésion a expiré depuis plus de 2 ans et dont les emprunts sont soldés
 PROCEDURE purge_membre AS
-DECLARE
     -- curseur avec la liste des membres expirés
     CURSOR C_membre_expi
         IS SELECT *
