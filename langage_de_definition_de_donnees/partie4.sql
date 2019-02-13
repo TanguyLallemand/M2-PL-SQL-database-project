@@ -164,7 +164,7 @@ BEGIN
         WHERE CURRENT OF C_exemplaire;
         CASE
             WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'NE';
-            WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
+            WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'BO';
             WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'MO';
             ELSE UPDATE Exemplaire SET Exemplaire.Etat ='MA';
         END CASE;
@@ -192,8 +192,8 @@ BEGIN
     IF (V_nombre_ouvrage>V_total_ouvrage/2) THEN
         -- PL/SQL ne premet pas de faire les alter, donc on utilise execute immediate
         EXECUTE IMMEDIATE 'alter table exemplaire drop constraint constraint_check_etat';
-        EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''NE'', ''Bon'', ''MO'', ''Douteux'', ''MA'')';
-        UPDATE Exemplaire SET Etat='Douteux'
+        EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''NE'', ''BO'', ''MO'', ''DO'', ''MA'')';
+        UPDATE Exemplaire SET Etat='DO'
         WHERE Nombre_emprunts BETWEEN 41 AND 60;
     END IF;
     COMMIT;

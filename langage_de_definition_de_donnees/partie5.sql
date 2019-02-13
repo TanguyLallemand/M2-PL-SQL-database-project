@@ -114,7 +114,7 @@ BEGIN
     IF (V_quantite<=10)
     THEN V_etat_emprunt:='NE';
         ELSE IF (V_quantite<=25)
-        THEN V_etat_emprunt :='Bon';
+        THEN V_etat_emprunt :='BO';
             ELSE IF (V_quantite<=40)
             THEN V_etat_emprunt :='MO';
             ELSE V_etat_emprunt :='MA';
