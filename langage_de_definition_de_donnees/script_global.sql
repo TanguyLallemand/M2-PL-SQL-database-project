@@ -120,6 +120,6 @@ COMMENT ON TABLE Genre IS 'Descriptifs des genres possibles des ouvrages';
 --------------------------------------------------------------------------------
 BEGIN
 	Maintenance.Maj_etat_emprunt;
-	Maintenance.Purge_membre;
+	Maintenance.Purgemembres;
 END;
 /
