@@ -28,8 +28,8 @@ DROP VIEW Ouvrages_par_genre;
 DROP VIEW Temps_moyen_emprunt_membre;
 DROP VIEW Temps_moyen_emprunt_genre;
 DROP VIEW Liste_des_ouvrages;
-DROP VIEW Ouvrage_les_plus_populaire_12mois;
-DROP VIEW Ouvrage_les_moins_populaire_3mois;
+DROP VIEW Ouvrage_plus_populaire_12mois;
+DROP VIEW Ouvrage_moins_populaire_3mois;
 DROP VIEW Ouvrage_sans_neuf;
 DROP VIEW Ouvrage_avec_public;
 DROP VIEW Abondance_ouvrages;
@@ -39,3 +39,10 @@ DROP VIEW Abondance_ouvrages;
 DROP SYNONYM Abonnes;
 DROP SEQUENCE Uniq_id_membre;
 DROP SEQUENCE Uniq_id_emprunt;
+
+--------------------------------------------------------------------------------
+-- Delete packages
+--------------------------------------------------------------------------------
+DROP PACKAGE LIVRE;
+DROP PACKAGE MAINTENANCE;
+DROP PACKAGE INFOS;
