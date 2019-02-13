@@ -24,16 +24,12 @@ where ISBN not in (SELECT Isbn
                 FROM Exemplaire
                 where Etat='NE');
 
--- III - 4 TODO pas utile?
--- tous les titres qui contiennent le mot « mer » quelque soit sa place dans le
--- titre et la casse avec laquelle il est renseigné.
+-- III - 4 intégré dans un view, une fonction generale est faite dans le package infos
 SELECT Titre
 FROM Ouvrage
 WHERE Titre LIKE '%mer%';
 
--- III - 5 TODO pas utile?
--- une requête qui permet de connaître tous les auteurs dont le nom possède la
--- particule « de »
+-- III - 5 Tintégré dans un view, une fonction generale est faite dans le package infos
 SELECT Auteur
 FROM Ouvrage
 WHERE Auteur LIKE '% de %';
