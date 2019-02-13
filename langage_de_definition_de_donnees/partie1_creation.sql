@@ -38,7 +38,7 @@ CREATE TABLE Exemplaire
 	CONSTRAINT Isbn_ouvrage FOREIGN Key(Isbn) REFERENCES Ouvrage (Isbn),
 	CONSTRAINT Pk_exemplaire PRIMARY KEY (Numero_exemplaire,Isbn)
 );
-ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprunt date DEFAULT Sysdate);
+
 CREATE TABLE Membre
 (
 	Id_membre Number(6) NOT NULL,
