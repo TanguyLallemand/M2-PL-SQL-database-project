@@ -117,9 +117,10 @@ END;
 PROCEDURE number_uses_book AS
 
 CURSOR C_exemplaire IS
-    SELECT Count(*) nombre, D.ISBN, D.Numero_exemplaire
-    FROM Details D, Exemplaire X
-    WHERE D.Date_retour > X.Datecalculemprunt;
+    select D.isbn, D.numero_exemplaire, count(*) as nombre
+    from details D, exemplaire E
+    where date_retour > DATECALCULEMPRUNT and D.isbn = E.isbn and D.NUMERO_EXEMPLAIRE = E.NUMERO_EXEMPLAIRE
+    group by D.isbn, D.numero_exemplaire
     -- Mise a jour des informations concernant le nombre d'emprunts
     --FOR UPDATE OF Nombre_emprunts, Datecalculemprunt;
 V_nombre_emprunts Exemplaire.Nombre_emprunts%TYPE;
