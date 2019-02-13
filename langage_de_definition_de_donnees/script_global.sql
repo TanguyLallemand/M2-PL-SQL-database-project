@@ -43,8 +43,8 @@ CREATE TABLE Exemplaire
 (
 	Isbn Varchar2(13) NOT NULL,
 	Numero_exemplaire Number(2) NOT NULL,
-	Etat Varchar2(8) DEFAULT 'Neuf'
-	CONSTRAINT Constraint_check_etat Check( Etat IN('Mauvais', 'Douteux', 'Moyen', 'Bon', 'Neuf')),
+	Etat Varchar2(2) DEFAULT 'Neuf'
+	CONSTRAINT Constraint_check_etat Check( Etat IN('MA', 'DO', 'MO', 'BO', 'NE')),
 	CONSTRAINT Isbn_ouvrage FOREIGN Key(Isbn) REFERENCES Ouvrage (Isbn),
 	CONSTRAINT Pk_exemplaire PRIMARY KEY (Numero_exemplaire,Isbn)
 );
@@ -102,3 +102,19 @@ CREATE TABLE Genre
 	Libelle Varchar2(40) NOT NULL
 );
 COMMENT ON TABLE Genre IS 'Descriptifs des genres possibles des ouvrages';
+
+--------------------------------------------------------------------------------
+-- Appel des scripts du projet
+--------------------------------------------------------------------------------
+@partie2_insertion.Sql
+@package_infos.Sql
+@package_livre.Sql
+@package_maintenance.Sql
+@triggers.Sql
+@views.Sql
+
+BEGIN
+	Maintenance.Maj_etat_emprunt;
+	Maintenance.Purge_membre;
+END;
+/
