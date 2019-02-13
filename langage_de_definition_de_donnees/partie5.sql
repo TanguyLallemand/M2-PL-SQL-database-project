@@ -112,12 +112,12 @@ BEGIN
     FROM Details
     WHERE Details.Isbn=V_exemplaire.Isbn AND Details.Numero_exemplaire=V_exemplaire.Numero_exemplaire;
     IF (V_quantite<=10)
-    THEN V_etat_emprunt:='Neuf';
+    THEN V_etat_emprunt:='NE';
         ELSE IF (V_quantite<=25)
         THEN V_etat_emprunt :='Bon';
             ELSE IF (V_quantite<=40)
             THEN V_etat_emprunt :='Moyen';
-            ELSE V_etat_emprunt :='Mauvais';
+            ELSE V_etat_emprunt :='MA';
             END IF;
         END IF;
     END IF;

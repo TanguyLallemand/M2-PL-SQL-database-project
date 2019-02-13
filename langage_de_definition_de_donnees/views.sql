@@ -147,7 +147,7 @@ SELECT *
 FROM Ouvrage
 WHERE Isbn NOT IN (SELECT Isbn
                 FROM Exemplaire
-                WHERE Etat='Neuf');
+                WHERE Etat='NE');
 
 --------------------------------------------------------------------------------
 -- affiche le public visé par chaque ouvrage

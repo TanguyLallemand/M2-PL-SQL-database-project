@@ -6,7 +6,7 @@
 
 CREATE OR REPLACE TRIGGER supprimer_exemplr_mauvais AFTER UPDATE ON EXEMPLAIRE
 FOR EACH ROW
-WHEN (new.Etat = 'Mauvais')
+WHEN (new.Etat = 'MA')
 
 BEGIN
   DELETE FROM Exemplaire WHERE isbn = :new.isbn and Numero_exemplaire = :new.Numero_exemplaire;

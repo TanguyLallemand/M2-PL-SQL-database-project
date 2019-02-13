@@ -22,7 +22,7 @@ select *
 from ouvrage
 where ISBN not in (SELECT Isbn
                 FROM Exemplaire
-                where Etat='Neuf');
+                where Etat='NE');
 
 -- III - 4 TODO pas utile?
 -- tous les titres qui contiennent le mot « mer » quelque soit sa place dans le

@@ -34,7 +34,7 @@ WHERE Date_retour IS NULL);
 
 -- II - 8
 -- mis dans le TRIGGER supprimer_exemplaire_en_mauvais_etat
-DELETE FROM Exemplaire WHERE Etat='Mauvais';
+DELETE FROM Exemplaire WHERE Etat='MA';
 
 -- II - 9 function infos.lister_ouvrages TODO creer une vue serait pas mieux?
 -- view faite a voir ce qu'on choisi
