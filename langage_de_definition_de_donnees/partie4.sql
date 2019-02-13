@@ -2,7 +2,7 @@
 -- voir question 6 partie 4
 
 --------------------------------------------------------------------------------
--- IV - 2
+-- IV - 2 Maintenance.Purgemembres
 -- qui permet de supprimer les membres dont l’adhésion a expiré depuis plus de 2
 -- ans.
 --------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
 
 --------------------------------------------------------------------------------
 -- alteration de la table pour supporter la nouvelle approche
-ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprunt date DEFAULT Sysdate);
+ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprunt date DEFAULT NULL);
 -- Mise a jour de la TABLE
 UPDATE Exemplaire SET Datecalculemprunt=(
     SELECT Min(Cree_le)
