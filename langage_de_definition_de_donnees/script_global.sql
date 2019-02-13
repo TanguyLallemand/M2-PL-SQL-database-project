@@ -1,6 +1,7 @@
 -- Projet de gestion de base de données
 -- Fresnais Louison, Courtin François, Lallemand Tanguy, Cruard Jonathan
 
+@script_drop.sql
 --Augmente le buffer afin de permettre les dbms_output
 SET Serveroutput ON SIZE 30000;
 
