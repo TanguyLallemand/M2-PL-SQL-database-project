@@ -132,7 +132,6 @@ FROM Membre
 WHERE Add_months(Date_adhesion, Duree) < (Sysdate+30);
 --------------------------------------------------------------------------------
 -- IV - 6 --
-
 --------------------------------------------------------------------------------
 -- alteration de la table pour supporter la nouvelle approche
 ALTER TABLE Exemplaire Add(Nombre_emprunts Number(3) DEFAULT 0, Datecalculemprunt date DEFAULT NULL);
@@ -166,7 +165,7 @@ BEGIN
         CASE
             WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'NE';
             WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
-            WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Moyen';
+            WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'MO';
             ELSE UPDATE Exemplaire SET Exemplaire.Etat ='MA';
         END CASE;
     END LOOP
@@ -185,7 +184,7 @@ BEGIN
     -- Calcul du nombre d'exemplaire avec l'etat moyen ou mauvais
     SELECT Count(*) INTO V_nombre_ouvrage
     FROM Exemplaire
-    WHERE Etat='MA' OR Etat='Moyen';
+    WHERE Etat='MA' OR Etat='MO';
     -- Nombre total d'exemplaire
     SELECT Count(*) INTO V_total_ouvrage
     FROM Exemplaire;
@@ -193,7 +192,7 @@ BEGIN
     IF (V_nombre_ouvrage>V_total_ouvrage/2) THEN
         -- PL/SQL ne premet pas de faire les alter, donc on utilise execute immediate
         EXECUTE IMMEDIATE 'alter table exemplaire drop constraint constraint_check_etat';
-        EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''NE'', ''Bon'', ''Moyen'', ''Douteux'', ''MA'')';
+        EXECUTE IMMEDIATE 'alter table exemplaire add constraint constraint_check_etat check etat in (''NE'', ''Bon'', ''MO'', ''Douteux'', ''MA'')';
         UPDATE Exemplaire SET Etat='Douteux'
         WHERE Nombre_emprunts BETWEEN 41 AND 60;
     END IF;
