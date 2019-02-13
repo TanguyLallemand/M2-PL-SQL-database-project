@@ -106,13 +106,16 @@ COMMENT ON TABLE Genre IS 'Descriptifs des genres possibles des ouvrages';
 --------------------------------------------------------------------------------
 -- Appel des scripts du projet
 --------------------------------------------------------------------------------
-@partie2_insertion.Sql
-@package_infos.Sql
-@package_livre.Sql
-@package_maintenance.Sql
-@triggers.Sql
-@views.Sql
+@partie2_insertion.sql
+@package_infos.sql
+@package_livre.sql
+@package_maintenance.sql
+@triggers.sql
+@views.sql
 
+--------------------------------------------------------------------------------
+-- Appel des fonctions
+--------------------------------------------------------------------------------
 BEGIN
 	Maintenance.Maj_etat_emprunt;
 	Maintenance.Purge_membre;
