@@ -4,8 +4,7 @@
 
 CREATE OR REPLACE PACKAGE Maintenance AS
     PROCEDURE Maj_etat_emprunt;
-
-    PROCEDURE Purge_membre;
+    PROCEDURE Purgemembres;
 
 END Maintenance;
 /
@@ -26,33 +25,34 @@ BEGIN
     COMMIT;
 END;
 
---------------------------------------------------------------------------------
--- supprime les membres dont l’adhésion a expiré depuis plus de 2 ans et dont les emprunts sont soldés
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- Purgemembres, permet de supprimer tous les membres dont
+-- l’adhésion n’a pas été renouvelée depuis trois ans.
+-- TODO ça doit pas marcher ton truc normalement car il y a la contrainte de forein key dans les autres tables (cf part IV Q2)
+-------------------------------------------------------------------------------
 
-PROCEDURE Purge_membre AS
-    -- curseur avec la liste des membres expirés
-    CURSOR C_membre_expi
-        IS SELECT *
-        FROM Membre
-        WHERE Add_months(Date_adhesion, Duree) < Add_months(Sysdate, (-2*12)) FOR UPDATE;
-    -- variable temp pour les membres de la liste
-    V_membre_expi C_membre_expi%Rowtype;
+PROCEDURE Purgemembres AS
+CURSOR C_membre_expi
+    IS SELECT *
+    FROM Membre
+    WHERE Add_months(Date_adhesion, Duree) < Add_months(Sysdate, (-3*12)) FOR UPDATE;
+-- variable temp pour les membres de la liste
+V_membre_expi C_membre_expi%Rowtype;
 
-    -- curseur pour les emprunts des membres expirés
-    CURSOR C_emprunts_en_cours(V_id_membre Emprunts.Id_membre%TYPE := NULL)
-        IS SELECT Count(*) AS Coun
-        FROM Emprunts
-        WHERE Id_membre = V_id_membre AND Etat_emprunt = 'EC';
-    -- variable temp pour les emprunts de la liste
-    V_emprunts_en_cours C_emprunts_en_cours%Rowtype;
+-- curseur pour les emprunts des membres expirés
+CURSOR C_emprunts_en_cours(V_id_membre Emprunts.Id_membre%TYPE := NULL)
+    IS SELECT count(*) as coun
+    FROM Emprunts
+    WHERE Id_membre = V_id_membre and etat_emprunt = 'EC';
+-- variable temp pour les emprunts de la liste
+V_emprunts_en_cours C_emprunts_en_cours%Rowtype;
 BEGIN
     FOR V_membre_expi IN C_membre_expi LOOP
         OPEN C_emprunts_en_cours(V_membre_expi.Id_membre);
         FETCH C_emprunts_en_cours INTO V_emprunts_en_cours;
-        IF V_emprunts_en_cours.Coun = 0 THEN
+        IF V_emprunts_en_cours.coun = 0 THEN
             UPDATE Emprunts SET Id_membre = NULL
-            WHERE Emprunts.Id_membre = V_membre_expi.Id_membre;
+            WHERE Emprunts.ID_membre = V_membre_expi.ID_membre;
             DELETE FROM Membre WHERE CURRENT OF C_membre_expi;
         END IF;
         CLOSE C_emprunts_en_cours;

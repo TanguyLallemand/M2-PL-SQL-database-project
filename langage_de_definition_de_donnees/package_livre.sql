@@ -6,7 +6,6 @@ CREATE PACKAGE Livre AS
     FUNCTION Adhesionajour (Num_adhe IN number)
         RETURN BOOLEAN;
     PROCEDURE Retourexemplaire (Num_isbn IN Varchar2, Num_exemplaire number);
-    PROCEDURE Purgemembres;
     FUNCTION Mesureactivite (V_periode IN number)
         RETURN number;
     FUNCTION Empruntmoyen (V_idmembre IN number)
@@ -84,23 +83,7 @@ BEGIN
    WHERE Date_retour IS NULL AND Isbn=Num_isbn AND Numero_exemplaire = Num_exemplaire;
 END;
 
--------------------------------------------------------------------------------
--- Purgemembres, permet de supprimer tous les membres dont
--- l’adhésion n’a pas été renouvelée depuis trois ans.
--- TODO ça doit pas marcher ton truc normalement car il y a la contrainte de forein key dans les autres tables (cf part IV Q2)
--------------------------------------------------------------------------------
 
-PROCEDURE Purgemembres AS
-    CURSOR C_membre IS
-    SELECT Id_membre
-    FROM Membre
-    WHERE (Trunc(Sysdate(), 'YYYY') - Trunc(Add_months(Date_adhesion, Duree), 'YYYY')) >3;
-BEGIN
-    FOR V_id IN C_membre LOOP
-        DELETE FROM Membre WHERE Id_membre=V_id.Id_membre;
-    END LOOP;
-    COMMIT;
-END;
 
 -------------------------------------------------------------------------------
 -- Mesureactivite, permet de connaître le numéro du membre qui a
