@@ -2,8 +2,9 @@
 -- Création des triggers
 --------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
 -- efface automatiquement les exemplaires en mauvais état
-
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER supprimer_exemplr_mauvais AFTER UPDATE ON EXEMPLAIRE
 FOR EACH ROW
 WHEN (new.Etat = 'MA')
@@ -13,7 +14,10 @@ BEGIN
 END;
 /
 
--- Partie VI Q2
+--------------------------------------------------------------------------------
+-- Vérifie que le membre effectuant un emprunt est à jour dans ses cotisations
+-- dans le cas contraire, empèche la réalisation de l'emprunt
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER valid_emprunt BEFORE INSERT ON Emprunts
 FOR EACH ROW
 
@@ -29,8 +33,9 @@ BEGIN
 END;
 /
 
-
--- Partie VI Q3 TODO a tester
+--------------------------------------------------------------------------------
+-- Empèche le changement de l'ID d'un membre sur une fiche d'emprunt
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER modif_mb_emprunt BEFORE UPDATE ON Emprunts
 FOR EACH ROW
 WHEN ((new.Id_membre != old.Id_membre) and (new.Id_membre != NULL))
@@ -40,7 +45,9 @@ BEGIN
   END;
 /
 
--- Partie VI Q4
+--------------------------------------------------------------------------------
+-- Partie Empèche le changement de référence d'un ouvrage emprunté (Etat 'EC')
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER mod_ref_emprunt BEFORE UPDATE ON Details
 FOR EACH ROW
 WHEN ((new.Isbn != old.Isbn) OR (new.Numero_exemplaire != old.Numero_exemplaire))
@@ -50,9 +57,29 @@ BEGIN
 END;
 /
 
---TODO Q5
+--------------------------------------------------------------------------------
+--Met à jour l'état d'un exemplaire en fonction de sno nombre d'emprunt à chaque
+-- modification du nombre d'emprunts
+--------------------------------------------------------------------------------
+CREATE OR REPLACE TRIGGER maj_etat_explr BEFORE UPDATE ON EXEMPLAIRE
+FOR EACH ROW
+WHEN (new.Nombre_emprunts != old.Nombre_emprunts)
 
--- Partie VI Q6
+BEGIN
+  CASE
+    WHEN :new.Nombre_emprunts <= 10 THEN :new.Etat := 'NE';
+    WHEN :new.Nombre_emprunts <= 25 THEN :new.Etat := 'BO';
+    WHEN :new.Nombre_emprunts <= 40 THEN :new.Etat := 'MO';
+    WHEN :new.Nombre_emprunts <= 60 THEN :new.Etat := 'DO';
+    ELSE :new.Etat :='MA';
+  END CASE;
+END;
+/
+
+--------------------------------------------------------------------------------
+-- Vérifie que le nombre d'emprunts d'un exemplaire est correct à la suppression
+-- du détail correspondant, met à jour le nombre d'emprunt en cas d'erreur
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER check_expl AFTER DELETE ON Details
 FOR EACH ROW
 
@@ -79,7 +106,10 @@ BEGIN
 END;
 /
 
-
+--------------------------------------------------------------------------------
+-- Ajoute le créateur de l'emprunt et la date de création lors d'un nouvel
+-- emprunt
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER info_create_emprunt
   BEFORE INSERT ON Emprunts
   FOR EACH ROW
@@ -90,6 +120,10 @@ CREATE OR REPLACE TRIGGER info_create_emprunt
   END;
 /
 
+--------------------------------------------------------------------------------
+-- Ajoute l'utilisateur ayant modifié un emprunt et la date de la modification
+-- lorsqu'un emprunt est modifié
+--------------------------------------------------------------------------------
 CREATE OR REPLACE TRIGGER info_modif_details
   BEFORE INSERT ON Details
   FOR EACH ROW
@@ -100,9 +134,11 @@ CREATE OR REPLACE TRIGGER info_modif_details
   END;
 /
 
--- Partie VI Q9
+--------------------------------------------------------------------------------
+-- Empèche l'ajout d'un détail pour un emprunt lorsque celui-ci n'est plus en cours
+--------------------------------------------------------------------------------
 
-CREATE OR REPLACE TRIGGER Ver_detail
+CREATE OR REPLACE TRIGGER Venr_detail
   BEFORE INSERT ON Details
   FOR EACH ROW
 DECLARE
