@@ -1,12 +1,12 @@
 CREATE PACKAGE Infos AS
     PROCEDURE Lister_ouvrages;
     PROCEDURE recherche_pattern (pattern_recherche IN VARCHAR2);
-    FUNCTION AnalyseActivite_emprunt (v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL);
-        RETURN NUMBER
-    FUNCTION AnalyseActivite_detail (v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL);
-        RETURN NUMBER
-    FUNCTION AnalyseActivite (v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL);
-        RETURN NUMBER
+    FUNCTION AnalyseActivite_emprunt (v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL)
+        RETURN NUMBER;
+    FUNCTION AnalyseActivite_detail (v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL)
+        RETURN NUMBER;
+    FUNCTION AnalyseActivite (v_util IN VARCHAR2 DEFAULT NULL, v_date IN DATE DEFAULT NULL)
+        RETURN NUMBER;
 
 END Infos;
 /
