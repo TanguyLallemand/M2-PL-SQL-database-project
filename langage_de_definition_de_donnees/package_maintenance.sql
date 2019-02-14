@@ -116,23 +116,20 @@ END;
 --             AND Cree_le>=V_exemplaire.Datecalculemprunt;
 PROCEDURE number_uses_book AS
 
-CURSOR C_exemplaire IS
-    select D.isbn, D.numero_exemplaire, count(*) nombre
-    from details D, exemplaire E
-    where date_retour > DATECALCULEMPRUNT and D.isbn = E.isbn and D.NUMERO_EXEMPLAIRE = E.NUMERO_EXEMPLAIRE
-    group by D.isbn, D.numero_exemplaire;
+CURSOR nombre_details IS
+    select d.isbn, d.numero_exemplaire, count(*) as nombre
+    from Details d, Exemplaire e
+    where d.date_retour > e.DATECALCULEMPRUNT and d.isbn = e.isbn and d.NUMERO_EXEMPLAIRE = e.NUMERO_EXEMPLAIRE
+    group by d.isbn, d.numero_exemplaire;
     -- Mise a jour des informations concernant le nombre d'emprunts
-    --FOR UPDATE OF Nombre_emprunts, Datecalculemprunt;
-V_nombre_emprunts Exemplaire.Nombre_emprunts%TYPE;
+V_exemplaire nombre_details%Rowtype;
 
 BEGIN
-  FOR V_exemplaire IN C_exemplaire
+  FOR V_exemplaire IN nombre_details
   LOOP
-  SELECT e.Nombre_emprunts INTO V_nombre_emprunts
-  FROM Details d, Exemplaire e
-  WHERE d.numero_exemplaire = e.numero_exemplaire
-      AND Isbn=V_exemplaire.Isbn;
-  UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate;
+  UPDATE Exemplaire SET Nombre_emprunts = Nombre_emprunts+V_exemplaire.nombre, DATECALCULEMPRUNT = Sysdate
+  WHERE numero_exemplaire = V_exemplaire.numero_exemplaire
+  AND Isbn=V_exemplaire.Isbn;
   END LOOP;
 END;
 
