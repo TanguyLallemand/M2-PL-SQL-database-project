@@ -180,3 +180,16 @@ FROM Ouvrage O JOIN (SELECT Isbn, Count(*) AS Compte
                     FROM Exemplaire
                     GROUP BY Isbn) Sel
 ON O.Isbn = Sel.Isbn;
+
+--------------------------------------------------------------------------------
+-- permet d'afficher l'ensemble des tables et views disponibles
+--------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW resume_table_et_vue AS
+SELECT *
+FROM user_catalog;
+
+--------------------------------------------------------------------------------
+-- permet d'afficher l'ensemble des tables et views disponibles
+--------------------------------------------------------------------------------
+SELECT object_name package_name, procedure_name, argument_name
+FROM user_procedures;
