@@ -190,7 +190,7 @@ SELECT *
 FROM user_catalog;
 
 --------------------------------------------------------------------------------
--- permet d'afficher l'ensemble des tables et views disponibles
+-- permet d'afficher l'ensemble des fonctions et procedures disponibles
 --------------------------------------------------------------------------------
 SELECT object_name package_name, procedure_name, argument_name
 FROM user_procedures;
