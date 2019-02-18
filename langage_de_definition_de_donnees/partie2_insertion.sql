@@ -90,7 +90,7 @@ INSERT INTO Emprunts VALUES (Uniq_id_emprunt.Nextval,5,Sysdate-30,DEFAULT);
 INSERT INTO Emprunts VALUES (Uniq_id_emprunt.Nextval,4,Sysdate-20,DEFAULT);
 INSERT INTO Emprunts VALUES (Uniq_id_emprunt.Nextval,1,Sysdate-10,DEFAULT);
 
-INSERT INTO Details VALUES (1,1,'2038704015',1,Sysdate-195);
+INSERT INTO Details VALUES (1,1,'2038704015',1,Sysdate-190);
 INSERT INTO Details VALUES (1,2,'2070367177',2,Sysdate-190);
 INSERT INTO Details VALUES (2,1,'2080720872',1,Sysdate-180);
 INSERT INTO Details VALUES (2,2,'2203314168',1,Sysdate-179);

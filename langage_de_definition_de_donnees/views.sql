@@ -187,7 +187,7 @@ ON O.Isbn = Sel.Isbn;
 --------------------------------------------------------------------------------
 CREATE OR REPLACE VIEW resume_procedures_et_fonctions AS
 select object_name, procedure_name, object_type
-from user_procedures
+from user_procedures;
 --------------------------------------------------------------------------------
 -- permet d'afficher l'ensemble des tables et views disponibles
 --------------------------------------------------------------------------------
