@@ -183,14 +183,14 @@ FROM Ouvrage O JOIN (SELECT Isbn, Count(*) AS Compte
 ON O.Isbn = Sel.Isbn;
 
 --------------------------------------------------------------------------------
+-- permet d'afficher l'ensemble des fonctions et procedures disponibles
+--------------------------------------------------------------------------------
+CREATE OR REPLACE VIEW resume_procedures AS
+select object_name, procedure_name, object_type
+from user_procedures
+--------------------------------------------------------------------------------
 -- permet d'afficher l'ensemble des tables et views disponibles
 --------------------------------------------------------------------------------
 CREATE OR REPLACE VIEW resume_table_et_vue AS
 SELECT *
 FROM user_catalog;
-
---------------------------------------------------------------------------------
--- permet d'afficher l'ensemble des fonctions et procedures disponibles
---------------------------------------------------------------------------------
-SELECT object_name package_name, procedure_name, argument_name
-FROM user_procedures;

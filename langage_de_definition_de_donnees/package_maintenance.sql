@@ -64,59 +64,7 @@ BEGIN
     COMMIT;
 END;
 
--- Mise a jour de la TABLE
--- PROCEDURE Update_calcul_emprunt AS
--- UPDATE Exemplaire SET Datecalculemprunt=(
---     SELECT Min(Cree_le)
---     FROM Emprunts Emp, Details Det
---     WHERE Emp.Id_emprunt=Det.Id_emprunt
---     AND Det.Isbn=Exemplaire.Isbn
---     AND Det.Numero_exemplaire=Exemplaire.Numero_exemplaire);
---     UPDATE Exemplaire SET Datecalculemprunt = Sysdate
---     WHERE Datecalculemprunt IS NULL;
---     COMMIT;
--- -- Mise a jour des informations du nombre d'emprunts et de l'etat des ouvrages
--- DECLARE
---     CURSOR C_exemplaire IS
---         SELECT * FROM Exemplaire
---         -- Mise a jour des informations concernant le nombre d'emprunts
---         FOR UPDATE OF Nombre_emprunts, Datecalculemprunt;
---     V_nombre_emprunts Exemplaire.Nombre_emprunts%TYPE;
--- BEGIN
---     FOR V_exemplaire IN C_exemplaire LOOP
---         SELECT Count(*) INTO V_nombre_emprunts
---         FROM Details, Emprunts
---         WHERE Details.Id_emprunt=Emprunts.Id_emprunt
---             AND Isbn=V_exemplaire.Isbn
---             AND Cree_le>=V_exemplaire.Datecalculemprunt;
---         -- Mise a jour de l'etat des livres en fonctions du nombre d'emprunts
---         UPDATE Exemplaire SET Nombre_emprunts=Nombre_emprunts+V_nombre_emprunts, Datecalculemprunt = Sysdate
---         WHERE CURRENT OF C_exemplaire;
---         CASE
---             WHEN V_exemplaire.Nombre_emprunts<=10 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Neuf';
---             WHEN V_exemplaire.Nombre_emprunts<=25 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Bon';
---             WHEN V_exemplaire.Nombre_emprunts<=40 THEN UPDATE Exemplaire SET Exemplaire.Etat = 'Moyen';
---             ELSE UPDATE Exemplaire SET Exemplaire.Etat ='Mauvais';
---         END CASE;
---     END LOOP
---     -- On repercute les changement dans la base de données
---     COMMIT;
--- END;
 
-
--- DECLARE
---     CURSOR C_exemplaire IS
---         SELECT * FROM Exemplaire
---         -- Mise a jour des informations concernant le nombre d'emprunts
---         FOR UPDATE OF Nombre_emprunts, Datecalculemprunt;
---     V_nombre_emprunts Exemplaire.Nombre_emprunts%TYPE;
--- BEGIN
---     FOR V_exemplaire IN C_exemplaire LOOP
---         SELECT Count(*) INTO V_nombre_emprunts
---         FROM Details, Emprunts
---         WHERE Details.Id_emprunt=Emprunts.Id_emprunt
---             AND Isbn=V_exemplaire.Isbn
---             AND Cree_le>=V_exemplaire.Datecalculemprunt;
 PROCEDURE number_uses_book AS
 
 CURSOR nombre_details IS
