@@ -1,4 +1,5 @@
-
+-- Projet de gestion de base de données
+-- Fresnais Louison, Courtin François, Lallemand Tanguy, Cruard Jonathan
 --------------------------------------------------------------------------------
 -- tous les titres qui contiennent le mot « mer » quelque soit sa place dans le
 -- titre et la casse avec laquelle il est renseigné.

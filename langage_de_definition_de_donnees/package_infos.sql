@@ -1,3 +1,6 @@
+-- Projet de gestion de base de données
+-- Fresnais Louison, Courtin François, Lallemand Tanguy, Cruard Jonathan
+
 CREATE PACKAGE Infos AS
     PROCEDURE Lister_ouvrages;
     PROCEDURE recherche_pattern (pattern_recherche IN VARCHAR2);

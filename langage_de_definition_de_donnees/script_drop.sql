@@ -1,3 +1,6 @@
+-- Projet de gestion de base de données
+-- Fresnais Louison, Courtin François, Lallemand Tanguy, Cruard Jonathan
+
 --------------------------------------------------------------------------------
 -- Delete tables
 --------------------------------------------------------------------------------
