@@ -185,7 +185,7 @@ ON O.Isbn = Sel.Isbn;
 --------------------------------------------------------------------------------
 -- permet d'afficher l'ensemble des fonctions et procedures disponibles
 --------------------------------------------------------------------------------
-CREATE OR REPLACE VIEW resume_procedures AS
+CREATE OR REPLACE VIEW resume_procedures_et_fonctions AS
 select object_name, procedure_name, object_type
 from user_procedures
 --------------------------------------------------------------------------------
